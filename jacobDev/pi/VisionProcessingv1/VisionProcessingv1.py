@@ -1,4 +1,4 @@
-             
+
 import cv2 as cv
 import grip
 import imutils
@@ -11,7 +11,7 @@ class PipelineWrapper:
 
     def __init__(self):
         self.gp = grip
-        
+
     #Uses the grip class to process the image
     def processImage(self, image):
         #Make an instance of the grip class and process the given image
@@ -22,16 +22,16 @@ class PipelineWrapper:
         cnts = self.gp.filter_contours_output
         return cnts
 
-        
+
 class FilterContours:
 
     def __init__(self):
         self.pw = PipelineWrapper()
 
     def getApprox(self):
-        #Make a pipeline so that we can get contours       
+        #Make a pipeline so that we can get contours
         cnts = self.pw.getContours()
-        
+
         #Initilize empty array of arrays of contour points
         approxPts = []
 
@@ -79,12 +79,12 @@ def VisionProcessing():
 
         #Resize image and run it through the pipeline
         frame = imutils.resize(frame, width = 1000)
-        
+
         frame = pw.processImage(frame)
         fc.getApprox()
-        
-        
+
+
 
 VisionProcessing()
-        
-    
+
+
