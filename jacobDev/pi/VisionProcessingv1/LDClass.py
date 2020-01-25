@@ -1,6 +1,6 @@
 import cv2 as cv
 
-class G2Class:
+class LDClass:
 
     img = cv.imread('test.jpg')
 
