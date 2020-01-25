@@ -5,6 +5,8 @@ class LDClass:
 
     img = cv.imread('test.jpg')
 
+    isLD = False
+
     approxPts = []
     centroid = []
 
@@ -103,8 +105,42 @@ class LDClass:
             avgPts.appemd(RBpts)
 
 
+    def calcDistance(point1, point2):
+        xDiff = point1[0] - point2[0]
+        yDiff = point1[1] - point2[1]
+        dist = math.sqrt((xDiff ** 2) + (yDiff ** 2))
+        return dist
+
+    
     def amILD():
-        
+        # Checks the distance of the top and bottom sides, making sure they are about the same
+        # Top side distance
+        LTtoRTImgDist = calcDistance(avgPts[0], avgPts[1])
+        # Bottom side distance
+        LBtoRBImgDist = calcDistance(avgPts[2], avgPts[3])
+        # Keeps the ratio at 1 or above to establish a nice spread both ways
+        if LTtoRTImgDist >= LBtoRBImgDist:
+            DistRatio = LTtoRTImgDist / LBtoRBImgDist
+        else:
+            DistRatio = LBtoRBImgDist / LTtoRTImgDist
+        if DistRatio < 1.15:
+            isLD = True
+
+        # if the distance ratio is above 1.15, then we assume the target is not the rectangle and below doesn't run
+        if isLD:
+            #Eq1 is the equation through the points in LT and RB
+            #Eq2 is the equation of the line perpendicular to Eq1 that also goes through the point in RT
+            #Get Eq1
+            deltaY = avgPts[3][1] - avgPts[1][1]
+            deltaX = avgPts[3][0] - avgPts[1][0]
+            slopeEq1 = deltaY / deltaX
+            yIntEq1 = avgPts[1][1] - (slopeEq1 * avgPts[1][0])
+            #Get Eq2
+            slopeEq2 = -(deltaX / deltaY)
+            yIntEq2 = avgPts[0][1] - (slopeEq2 * avgPts[0][0]
+            #Calculate the intersection point between Eq1 and Eq2
+            XIntersect = int((yIntEq2 - yIntEq1) / (slopeEq2 - slopeEq1))
+            
     
 
     def doEverything():
