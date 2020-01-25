@@ -1,10 +1,13 @@
              
 import cv2 as cv
-import grip
 import imutils
 import argparse
 import numpy as np
 from collections import deque
+
+
+import grip
+import G2Class
 
 
 class PipelineWrapper:
@@ -44,14 +47,15 @@ class FilterContours:
             pts = cv.approxPolyDP(cnt, epsilon, True)
             approxPts.append(pts)
 
-        print(approx)
-        #return approx
+        return approxPts
 
 
 def VisionProcessing():
 
     pw = PipelineWrapper()
     fc = FilterContours()
+    approx = fc.getApprox()
+    g2 = G2Class(approx)
 
     #Get video and buffer from terminal as well as image p
     ap = argparse.ArgumentParser()
@@ -68,7 +72,7 @@ def VisionProcessing():
     else:
         camera = cv.VideoCapture(args["video"])
 
-    #THE GIGALOOP
+    #DA MASTA LOOP
     while True:
         #Grab the frame
         (grabbed, frame) = camera.read()
@@ -82,6 +86,7 @@ def VisionProcessing():
         
         frame = pw.processImage(frame)
         fc.getApprox()
+
         
         
 

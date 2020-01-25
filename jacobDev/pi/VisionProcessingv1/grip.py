@@ -57,7 +57,7 @@ class GripPipeline:
         self.filter_contours_output = None
 
 
-    def process(self, source0):
+    def process(self, source0):  
         """
         Runs the pipeline and sets all outputs to new values.
         """
