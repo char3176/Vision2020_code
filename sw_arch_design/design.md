@@ -40,7 +40,10 @@
             - If autoChaseBall 
             - If showDriverG2Cam then set videostream to G2Stream
             - If showDriverLBCam then set videostream to LBStream
-        - 
+        - for i in listOfCams
+          - processFrame
+
+          
 
 
 
@@ -91,6 +94,8 @@
 		- distance_iLBRT
 	   - check if values of calculated angles and ratios of distances
   	     match a trapazoid
+  	   - 
+           
 	  
 
 
