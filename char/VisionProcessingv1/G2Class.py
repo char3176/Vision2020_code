@@ -30,18 +30,26 @@ class G2Class:
         #Average between inner and outer lengths
         self.SideLen = (17.5 + 19.625) / 2
         #*#*#*  Need to loop over approx "len(approx)" times doing below conditional
-        numOfApproxSets = len(approx)
-        for approxSetIndex in range(0,numOfApproxSets):
-          if len(approx[approxSetIndex]) == 4 or 8:
-            self.approxPts = approx[approxSetIndex]
-
+        numOfPointSets = len(approx)
+	#Loops over pointsets
+    #   for pointSetIndex in range(0,numOfPointSets):
+#	    #Checking if pointset has 4 or 8 elements
+ #          if len(approx[pointSetIndex]) == 4 or 8:
+	    #Loops over points
+  #              numOfPoints = len(approx[pointSetIndex])
+   #             for pointsIndex in range(0, numOfPoints):
+    #                self.approxPts.append(approx[pointSetIndex][pointsIndex][0])         
+        self.approxPts = approx[0]
+        
     def calcCentroid(self):
         #Compute the centroid of the array of approxPts
-        print(self.approxPts)
-        M = cv2.moments(self.approxPts[0])
-        #print(M)
+        #print(self.approxPts)
+        tArray = [[100, 100], [200, 200], [300, 300], [400, 400]]
+        M = cv2.moments(self.approxPts)
+        print(M)
         self.cX = int(M["m10"], M["m00"])
         self.cY = int(M["m01"], M["m00"])
+        print(self.cX)
         self.centroid = [self.cX, self.cY]
 
     def seperateIntoQuads(self):
