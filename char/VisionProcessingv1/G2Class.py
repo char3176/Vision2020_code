@@ -4,9 +4,10 @@ import math
 class G2Class:
 
 
-    def __init__(self, approx):
+    def __init__(self, cnt, approx):
         self.isAG2 = False
 
+        self.cnts = cnt
         self.approxPts = []
         self.centroid = []
         self.cX = 0
@@ -24,31 +25,45 @@ class G2Class:
         self.innerPts = []
         #Averages
         self.avgPts = []
-
+        self.test1 = []
         #Vision Tape Constants
         self.LTtoRTLen = 39.25
         #Average between inner and outer lengths
-        self.SideLen = (17.5 + 19.625) / 2
+        self.sideLen = (17.5 + 19.625) / 2
         #*#*#*  Need to loop over approx "len(approx)" times doing below conditional
         numOfPointSets = len(approx)
-	#Loops over pointsets
-    #   for pointSetIndex in range(0,numOfPointSets):
-#	    #Checking if pointset has 4 or 8 elements
- #          if len(approx[pointSetIndex]) == 4 or 8:
-	    #Loops over points
-  #              numOfPoints = len(approx[pointSetIndex])
-   #             for pointsIndex in range(0, numOfPoints):
-    #                self.approxPts.append(approx[pointSetIndex][pointsIndex][0])         
-        self.approxPts = approx[0]
-        
+        #Loops over pointsets
+        for pointSetIndex in range(0,numOfPointSets):
+   	    #Checking if pointset has 4 or 8 elements
+           if len(approx[pointSetIndex]) == 4 or 8:
+                #Loops over points
+                numOfPoints = len(approx[pointSetIndex])
+                for pointsIndex in range(0, numOfPoints):
+                    coordArray = approx[pointSetIndex][pointsIndex][0]
+                    coordArray2 = coordArray.tolist()
+                    self.approxPts.append(coordArray2)
+        print("approxPts", self.approxPts)
+        red = [0,0,255]
+        tempimage = cv2.imread("test.jpg")
+        approxPtsLength = len(self.approxPts)
+        for i in range(0,approxPtsLength):
+          print(tempimage[self.approxPts[i][0],self.approxPts[i][1]])
+          #tempimage[self.approxPts[i][0],self.approxPts[i][1]]=red
+        cv2.imwrite('t.jpg',tempimage)
+
+      ##### NEED TO FIX APPROXPTS ARRAY ABOVE TO INCLUDE/ACCOUNT FOR MULTIPE
+      ##### "PtsSets" incase of more than 1 contour
+      ##### ANNNDDDD decide what to do if we are fu-bar'd with more than one match later
+      ##### lower down in Jake's logic
+
     def calcCentroid(self):
         #Compute the centroid of the array of approxPts
         #print(self.approxPts)
-        tArray = [[100, 100], [200, 200], [300, 300], [400, 400]]
-        M = cv2.moments(self.approxPts)
+        cnt = self.cnts[0]
+        M = cv2.moments(cnt)
         print(M)
-        self.cX = int(M["m10"], M["m00"])
-        self.cY = int(M["m01"], M["m00"])
+        self.cX = int(M["m10"] / M["m00"])
+        self.cY = int(M["m01"] / M["m00"])
         print(self.cX)
         self.centroid = [self.cX, self.cY]
 
@@ -60,7 +75,7 @@ class G2Class:
                 else:
                     self.RBpts.append(pnt)
             else:
-                if pnt[1] < cY:
+                if pnt[1] < self.cY:
                     self.LTpts.append(pnt)
                 else:
                     self.LBpts.append(pnt)
@@ -99,7 +114,7 @@ class G2Class:
                 self.innerPts.append(self.RBpts[1])
                 self.outerPts.append(self.RBpts[0])
 
-    def findAvgs():
+    def findAvgs(self):
         if len(self.RTpts) == 2:
             #Average the two points in each quadrant
             XCoord = (int)(self.RTpts[0][0] + self.RTpts[1][0])/2
@@ -140,10 +155,10 @@ class G2Class:
         distRatioReal = self.LTtoRTLen / self.sideLen
         #If ratios aren't similar, we're not looking at a G2
         if abs(distRatioImg - distRatioReal) < 0.1:
-           isAG2 = True
+           self.isAG2 = True
 
         #Go to next text if it passed the first
-        if isAG2:
+        if self.isAG2:
             #Eq1 refers to line equation of the line between Quads 2 and 4
             #Eq2 refers to the equation of the perp line between Quad 3
                 #and the point of intersection of eq1
@@ -190,9 +205,8 @@ class G2Class:
 
             #Check if the angles' sum are around 240 degrees
             if abs((ang1 + ang2 + ang3 + ang4) - 240) != 10:
-                isAG2 = False
+                self.isAG2 = False
 
-        return isAG2
 
 
     def doEverything(self):
