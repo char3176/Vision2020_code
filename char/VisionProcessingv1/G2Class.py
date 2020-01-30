@@ -8,6 +8,7 @@ class G2Class:
         self.isAG2 = False
 
         self.cnts = cnt
+        self.approx = approx[0]
         self.approxPts = []
         self.centroid = []
         self.cX = 0
@@ -33,6 +34,7 @@ class G2Class:
         #*#*#*  Need to loop over approx "len(approx)" times doing below conditional
         numOfPointSets = len(approx)
         #Loops over pointsets
+        print("approx:",approx)
         for pointSetIndex in range(0,numOfPointSets):
    	    #Checking if pointset has 4 or 8 elements
            if len(approx[pointSetIndex]) == 4 or 8:
@@ -45,11 +47,37 @@ class G2Class:
         print("approxPts", self.approxPts)
         red = [0,0,255]
         tempimage = cv2.imread("test.jpg")
+        print("tempimage: ",tempimage)
+        print("tempimage len: ",len(tempimage))
+        print("tempimage[0] len: ",len(tempimage[0]))
         approxPtsLength = len(self.approxPts)
+        print(approxPtsLength)
         for i in range(0,approxPtsLength):
-          print(tempimage[self.approxPts[i][0],self.approxPts[i][1]])
-          #tempimage[self.approxPts[i][0],self.approxPts[i][1]]=red
+          print("i: ", i)
+          print(self.approxPts[i][0],self.approxPts[i][1])
+          print(tempimage[self.approxPts[i][1],self.approxPts[i][0]])
+          tempimage[self.approxPts[i][1],self.approxPts[i][0]]=red
+        cv2.drawContours(tempimage, [self.approx], -1, (0, 0, 255), 2)
+        cv2.drawContours(tempimage, self.approx, -1, (0, 255, 0), 4)
+        cnt = self.cnts[0]
+        M = cv2.moments(cnt)
+        print(M)
+        self.cX = int(M["m10"] / M["m00"])
+        cX = int(M["m10"] / M["m00"])
+        self.cY = int(M["m01"] / M["m00"])
+        cY = int(M["m01"] / M["m00"]) - 20
+        print(self.cX,self.cY)
+        self.centroid = [self.cX, self.cY]
+        (x, y, w, h) = cv2.boundingRect(self.approx)
+        (startX, endX) = (int(cX - (h * 0.25)), int(cX + (h * 0.25)))
+        (startY, endY) = (int(cY - (h * 0.25)), int(cY + (h * 0.25)))
+        cv2.line(tempimage, (startX, cY), (endX, cY), (0, 255, 0), 2)
+        cv2.line(tempimage, (cX, startY), (cX, endY), (0, 255, 0), 2)
+        myradius = ((endY - startY) / 2 ) * 0.8
+        cv2.circle(tempimage, (int(cX), int(cY)), int(myradius), (0,255,0), 1)
+        cv2.circle(tempimage, (int(cX), int(cY)), int(myradius * 0.3), (0,0,255), 1)
         cv2.imwrite('t.jpg',tempimage)
+
 
       ##### NEED TO FIX APPROXPTS ARRAY ABOVE TO INCLUDE/ACCOUNT FOR MULTIPE
       ##### "PtsSets" incase of more than 1 contour
@@ -64,7 +92,7 @@ class G2Class:
         print(M)
         self.cX = int(M["m10"] / M["m00"])
         self.cY = int(M["m01"] / M["m00"])
-        print(self.cX)
+        print(self.cX,self.cY)
         self.centroid = [self.cX, self.cY]
 
     def seperateIntoQuads(self):
@@ -113,6 +141,10 @@ class G2Class:
             else:
                 self.innerPts.append(self.RBpts[1])
                 self.outerPts.append(self.RBpts[0])
+            print("RTpts: ",self.RTpts)
+            print("RBpts: ",self.RBpts)
+            print("LBpts: ",self.LBpts)
+            print("LTpts: ",self.LTpts)
 
     def findAvgs(self):
         if len(self.RTpts) == 2:
@@ -135,6 +167,10 @@ class G2Class:
             self.avgPts.append(LTpts)
             self.avgPts.append(LBpts)
             self.avgPts.appemd(RBpts)
+        print("avgRTpts: ",self.RTpts)
+        print("RBpts: ",self.RBpts)
+        print("LBpts: ",self.LBpts)
+        print("LTpts: ",self.LTpts)
 
     def calcDistance(self,point1, point2):
         xDiff = point1[0] - point2[0]
@@ -156,7 +192,7 @@ class G2Class:
         #If ratios aren't similar, we're not looking at a G2
         if abs(distRatioImg - distRatioReal) < 0.1:
            self.isAG2 = True
-
+           print("self.isAG2: ")
         #Go to next text if it passed the first
         if self.isAG2:
             #Eq1 refers to line equation of the line between Quads 2 and 4
