@@ -4,11 +4,12 @@ import math
 class G2Class:
 
 
-    def __init__(self, cnt, approx):
+    def __init__(self, cnt, approx, approxID):
         self.isAG2 = False
 
-        self.cnts = cnt
+        self.cnt = cnt
         self.approx = approx[0]
+        self.cntID = approxID
         self.approxPts = []
         self.centroid = []
         self.cX = 0
@@ -33,17 +34,15 @@ class G2Class:
         self.sideLen = (17.5 + 19.625) / 2
         #*#*#*  Need to loop over approx "len(approx)" times doing below conditional
         numOfPointSets = len(approx)
-        #Loops over pointsets
         print("approx:",approx)
-        for pointSetIndex in range(0,numOfPointSets):
-   	    #Checking if pointset has 4 or 8 elements
-           if len(approx[pointSetIndex]) == 4 or 8:
-                #Loops over points
-                numOfPoints = len(approx[pointSetIndex])
-                for pointsIndex in range(0, numOfPoints):
-                    coordArray = approx[pointSetIndex][pointsIndex][0]
-                    coordArray2 = coordArray.tolist()
-                    self.approxPts.append(coordArray2)
+        #Checking if pointset has 4 or 8 elements
+        if len(approx[approxID]) == 4 or 8:
+            #Loops over points
+            numOfPoints = len(approx[approxID])
+            for pointsIndex in range(0, numOfPoints):
+                coordArray = approx[approxID][pointsIndex][0]
+                coordArray2 = coordArray.tolist()
+                self.approxPts.append(coordArray2)
         print("approxPts", self.approxPts)
         red = [0,0,255]
         tempimage = cv2.imread("test.jpg")
@@ -59,8 +58,7 @@ class G2Class:
           tempimage[self.approxPts[i][1],self.approxPts[i][0]]=red
         cv2.drawContours(tempimage, [self.approx], -1, (0, 0, 255), 2)
         cv2.drawContours(tempimage, self.approx, -1, (0, 255, 0), 4)
-        cnt = self.cnts[0]
-        M = cv2.moments(cnt)
+        M = cv2.moments(self.cnt)
         print(M)
         self.cX = int(M["m10"] / M["m00"])
         cX = int(M["m10"] / M["m00"])
@@ -87,8 +85,7 @@ class G2Class:
     def calcCentroid(self):
         #Compute the centroid of the array of approxPts
         #print(self.approxPts)
-        cnt = self.cnts[0]
-        M = cv2.moments(cnt)
+        M = cv2.moments(self.cnt)
         print(M)
         self.cX = int(M["m10"] / M["m00"])
         self.cY = int(M["m01"] / M["m00"])
@@ -244,14 +241,13 @@ class G2Class:
                 self.isAG2 = False
 
 
-
     def doEverything(self):
         self.calcCentroid()
         self.seperateIntoQuads()
         self.seperateQuadsIntoIvO()
         self.findAvgs()
         self.amIG2()
-        print(self.isAG2)
+        return self.isAG2
 
     #doEverything()
 
