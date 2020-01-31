@@ -9,16 +9,17 @@ class FilterG2s:
         self.theTrueG2 = []
 
     def addG2(self, cnt, approx, approxID):
-        g2 = G2Class(cnt, approx, approxID):
-        self.G2s += g2
+        g2 = G2Class(cnt, approx, approxID)
+        self.G2s.append(g2)
 
     def findTheG2(self):
-        for g2 in G2s:
+        for g2 in self.G2s:
             g2.doEverything()
-        for g2 in G2s:
-            if G2s[g2].isAG2:
-                self.theTrueG2 += g2
-        if len(theTrueG2) == 1:
-            return theTrueG2[0]     
+        for g2 in self.G2s:
+            if g2.isAG2:
+                self.theTrueG2.append(g2)
+        if len(self.theTrueG2) == 1:
+            print("ONLY ONE G2 FOUND")  
+            return self.theTrueG2[0]
 
         

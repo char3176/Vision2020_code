@@ -34,7 +34,7 @@ class G2Class:
         self.sideLen = (17.5 + 19.625) / 2
         #*#*#*  Need to loop over approx "len(approx)" times doing below conditional
         numOfPointSets = len(approx)
-        print("approx:",approx)
+        #print("approx:",approx)
         #Checking if pointset has 4 or 8 elements
         if len(approx[approxID]) == 4 or 8:
             #Loops over points
@@ -43,28 +43,28 @@ class G2Class:
                 coordArray = approx[approxID][pointsIndex][0]
                 coordArray2 = coordArray.tolist()
                 self.approxPts.append(coordArray2)
-        print("approxPts", self.approxPts)
+        #print("approxPts", self.approxPts)
         red = [0,0,255]
-        tempimage = cv2.imread("test.jpg")
-        print("tempimage: ",tempimage)
-        print("tempimage len: ",len(tempimage))
-        print("tempimage[0] len: ",len(tempimage[0]))
+        tempimage = cv2.imread("20200117-202126_16-100-74_2.jpg")
+        #print("tempimage: ",tempimage)
+        #print("tempimage len: ",len(tempimage))
+        #print("tempimage[0] len: ",len(tempimage[0]))
         approxPtsLength = len(self.approxPts)
-        print(approxPtsLength)
+        #print(approxPtsLength)
         for i in range(0,approxPtsLength):
-          print("i: ", i)
-          print(self.approxPts[i][0],self.approxPts[i][1])
-          print(tempimage[self.approxPts[i][1],self.approxPts[i][0]])
+          #print("i: ", i)
+          #print(self.approxPts[i][0],self.approxPts[i][1])
+          #print(tempimage[self.approxPts[i][1],self.approxPts[i][0]])
           tempimage[self.approxPts[i][1],self.approxPts[i][0]]=red
         cv2.drawContours(tempimage, [self.approx], -1, (0, 0, 255), 2)
         cv2.drawContours(tempimage, self.approx, -1, (0, 255, 0), 4)
         M = cv2.moments(self.cnt)
-        print(M)
+        #print(M)
         self.cX = int(M["m10"] / M["m00"])
         cX = int(M["m10"] / M["m00"])
         self.cY = int(M["m01"] / M["m00"])
         cY = int(M["m01"] / M["m00"]) - 20
-        print(self.cX,self.cY)
+        #print(self.cX,self.cY)
         self.centroid = [self.cX, self.cY]
         (x, y, w, h) = cv2.boundingRect(self.approx)
         (startX, endX) = (int(cX - (h * 0.25)), int(cX + (h * 0.25)))
@@ -77,7 +77,7 @@ class G2Class:
         cv2.imwrite('t.jpg',tempimage)
 
 
-      ##### NEED TO FIX APPROXPTS ARRAY ABOVE TO INCLUDE/ACCOUNT FOR MULTIPE
+      ##### NEED TO FIX APPROXPTS ARRAY ABOVE TO INCLUDE/ACCOUNT FOR MULTIPE ---should be accounted for with 
       ##### "PtsSets" incase of more than 1 contour
       ##### ANNNDDDD decide what to do if we are fu-bar'd with more than one match later
       ##### lower down in Jake's logic
@@ -86,10 +86,10 @@ class G2Class:
         #Compute the centroid of the array of approxPts
         #print(self.approxPts)
         M = cv2.moments(self.cnt)
-        print(M)
+        #print(M)
         self.cX = int(M["m10"] / M["m00"])
         self.cY = int(M["m01"] / M["m00"])
-        print(self.cX,self.cY)
+        #print(self.cX,self.cY)
         self.centroid = [self.cX, self.cY]
 
     def seperateIntoQuads(self):
@@ -160,14 +160,16 @@ class G2Class:
             self.avgPts.append([XCoord, YCoord])
         else:
             #If 1 point per quadrant, make the average our only point
-            self.avgPts.append(RTpts)
-            self.avgPts.append(LTpts)
-            self.avgPts.append(LBpts)
-            self.avgPts.appemd(RBpts)
-        print("avgRTpts: ",self.RTpts)
-        print("RBpts: ",self.RBpts)
-        print("LBpts: ",self.LBpts)
-        print("LTpts: ",self.LTpts)
+            self.avgPts.append((int)(RTpts))
+            self.avgPts.append((int)(LTpts))
+            self.avgPts.append((int)(LBpts))
+            self.avgPts.appemd((int)(RBpts))
+        print()
+        print("avgRTpts: ",self.avgPts[0])
+        print("avgLTpts: ",self.avgPts[1])
+        print("avgLBpts: ",self.avgPts[2])
+        print("avgRBpts: ",self.avgPts[3])
+        print("Centroid: ", self.centroid)
 
     def calcDistance(self,point1, point2):
         xDiff = point1[0] - point2[0]
@@ -187,6 +189,7 @@ class G2Class:
         distRatioImg = self.LTtoRTImgDist/self.LBtoRBImgDist
         distRatioReal = self.LTtoRTLen / self.sideLen
         #If ratios aren't similar, we're not looking at a G2
+        print("imgRat: ", distRatioImg, "   realRat: ", distRatioReal)
         if abs(distRatioImg - distRatioReal) < 0.1:
            self.isAG2 = True
            print("self.isAG2: ")

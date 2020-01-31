@@ -97,7 +97,7 @@ def VisionProcessing(image):
 
 
 
-image = cv.imread("BlueGoal-180in-Center.jpg")
+image = cv.imread("20200117-202126_16-100-74_2.jpg")
 VisionProcessing(image)
 
 
