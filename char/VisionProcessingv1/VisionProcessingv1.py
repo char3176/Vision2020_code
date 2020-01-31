@@ -49,46 +49,46 @@ class FilterContours:
         #print("approxPts")
         #print(approxPts)
         #print(len(approxPts[0]))
-        return approxPts
+        return cnts, approxPts
 
 
 
 def VisionProcessing(image):
 
     fc = FilterContours(image)
-    approx = fc.getApprox()
-    g2 = G2Class(approx)
+    cnts, approx = fc.getApprox()
+    g2 = G2Class(cnts, approx)
     g2.doEverything()
 
     #Get video and buffer from terminal as well as image p
-    ap = argparse.ArgumentParser()
-    ap.add_argument("-v", "--video", help = "path  to the (optional) video file")
-    ap.add_argument("-b", "--buffer", type=int, default=64, help="max buffer size")
-    args = vars(ap.parse_args())
+#    ap = argparse.ArgumentParser()
+#    ap.add_argument("-v", "--video", help = "path  to the (optional) video file")
+#    ap.add_argument("-b", "--buffer", type=int, default=64, help="max buffer size")
+#    args = vars(ap.parse_args())
 
     #Initilize tracked points array
-    pts = deque(maxlen = args["buffer"])
+#    pts = deque(maxlen = args["buffer"])
 
     #Makes sure were getting a camera stream
-    if not args.get("video", False):
-        camera = cv.VideoCapture(0)
-    else:
-        camera = cv.VideoCapture(args["video"])
+#    if not args.get("video", False):
+#        camera = cv.VideoCapture(0)
+#    else:
+#        camera = cv.VideoCapture(args["video"])
 
     #DA MASTA LOOP
-    while True:
+#    while True:
         #Grab the frame
-        (grabbed, frame) = camera.read()
+#        (grabbed, frame) = camera.read()
 
         #Stop the loop if the camera stops streaming
-        if args.get("video") and not grabbed:
-            break
+#        if args.get("video") and not grabbed:
+#            break
 
         #Resize image and run it through the pipeline
-        frame = imutils.resize(frame, width = 1000)
+#        frame = imutils.resize(frame, width = 1000)
 
-        frame = pw.processImage(frame)
-        fc.getApprox()
+#        frame = pw.processImage(frame)
+#        fc.getApprox()
 
 
 
