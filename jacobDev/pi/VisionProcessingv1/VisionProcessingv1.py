@@ -7,7 +7,7 @@ from collections import deque
 
 
 from grip import GripPipeline
-from G2Class import G2Class
+from FilterG2s import FilterG2s
 
 
 class PipelineWrapper:
@@ -57,8 +57,13 @@ def VisionProcessing(image):
 
     fc = FilterContours(image)
     cnts, approx = fc.getApprox()
-    g2 = G2Class(cnts, approx)
-    g2.doEverything()
+    sorter = FilterG2s()
+    approxID = 0
+    for c in cnts:
+        sorter.addG2(c, approx, approxID)
+        approxID += approxID
+
+    g2 = sorter.findTheG2()
 
     #Get video and buffer from terminal as well as image p
 #    ap = argparse.ArgumentParser()
@@ -92,7 +97,7 @@ def VisionProcessing(image):
 
 
 
-image = cv.imread("test.jpg")
+image = cv.imread("BlueGoal-180in-Center.jpg")
 VisionProcessing(image)
 
 
