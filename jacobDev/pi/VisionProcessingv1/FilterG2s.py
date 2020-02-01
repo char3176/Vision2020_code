@@ -18,8 +18,7 @@ class FilterG2s:
         for g2 in self.G2s:
             if g2.isAG2:
                 self.theTrueG2.append(g2)
-        if len(self.theTrueG2) == 1:
-            print("ONLY ONE G2 FOUND")  
+        if len(self.theTrueG2) == 1:  
             return self.theTrueG2[0]
 
         
