@@ -89,17 +89,31 @@ def VisionProcessing(image, isAVideo):
 
             #Stop the loop if the camera stops streaming
             if args.get("video") and not grabbed:
+                print("THIS LINE IS REACHED")
                 break
 
-            #Resize image and run it through the pipeline
-            frame = imutils.resize(frame, width = 1000)
-
+            #Run image through the pipeline and find G2
             frame = pw.processImage(frame)
-            fc.getApprox()
+            fc = FilterContours(image)
+            cnts, approx = fc.getApprox()
+            sorter = FilterG2s()
+            G2ID = 0
+            for c in cnts:
+                sorter.addG2(c, approx, G2ID)
+                G2ID += 1
+
+            g2 = sorter.findTheG2()
+            cv.imshow("VP", frame)
+            key = cv.waitKey(1) & 0xFF
+	    
+            if key == ord("q"):
+                break
 
 
 
 image = cv.imread("t5.jpg")
-VisionProcessing(image, False)
+VisionProcessing(image, True)
+cv.destroyAllWindows()
+
 
 
