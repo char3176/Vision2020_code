@@ -53,51 +53,53 @@ class FilterContours:
 
 
 
-def VisionProcessing(image):
+def VisionProcessing(image, isAVideo):
 
-    fc = FilterContours(image)
-    cnts, approx = fc.getApprox()
-    sorter = FilterG2s()
-    approxID = 0
-    for c in cnts:
-        sorter.addG2(c, approx, approxID)
-        approxID += approxID
+    if not isAVideo:
+        fc = FilterContours(image)
+        cnts, approx = fc.getApprox()
+        sorter = FilterG2s()
+        G2ID = 0
+        for c in cnts:
+            sorter.addG2(c, approx, G2ID)
+            G2ID += 1
 
-    g2 = sorter.findTheG2()
+        g2 = sorter.findTheG2()
 
-    #Get video and buffer from terminal as well as image p
-#    ap = argparse.ArgumentParser()
-#    ap.add_argument("-v", "--video", help = "path  to the (optional) video file")
-#    ap.add_argument("-b", "--buffer", type=int, default=64, help="max buffer size")
-#    args = vars(ap.parse_args())
+    else:
+        #Get video and buffer from terminal as well as image p
+        ap = argparse.ArgumentParser()
+        ap.add_argument("-v", "--video", help = "path  to the (optional) video file")
+        ap.add_argument("-b", "--buffer", type=int, default=64, help="max buffer size")
+        args = vars(ap.parse_args())
 
-    #Initilize tracked points array
-#    pts = deque(maxlen = args["buffer"])
+        #Initilize tracked points array
+        pts = deque(maxlen = args["buffer"])
 
-    #Makes sure were getting a camera stream
-#    if not args.get("video", False):
-#        camera = cv.VideoCapture(0)
-#    else:
-#        camera = cv.VideoCapture(args["video"])
+        #Makes sure were getting a camera stream
+        if not args.get("video", False):
+            camera = cv.VideoCapture(0)
+        else:
+            camera = cv.VideoCapture(args["video"])
 
-    #DA MASTA LOOP
-#    while True:
-        #Grab the frame
-#        (grabbed, frame) = camera.read()
+        #DA MASTA LOOP
+        while True:
+            #Grab the frame
+            (grabbed, frame) = camera.read()
 
-        #Stop the loop if the camera stops streaming
-#        if args.get("video") and not grabbed:
-#            break
+            #Stop the loop if the camera stops streaming
+            if args.get("video") and not grabbed:
+                break
 
-        #Resize image and run it through the pipeline
-#        frame = imutils.resize(frame, width = 1000)
+            #Resize image and run it through the pipeline
+            frame = imutils.resize(frame, width = 1000)
 
-#        frame = pw.processImage(frame)
-#        fc.getApprox()
+            frame = pw.processImage(frame)
+            fc.getApprox()
 
 
 
-image = cv.imread("20200117-202126_16-100-74_2.jpg")
-VisionProcessing(image)
+image = cv.imread("t5.jpg")
+VisionProcessing(image, False)
 
 

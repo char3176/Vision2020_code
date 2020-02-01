@@ -8,6 +8,7 @@ from collections import deque
 
 from grip import GripPipeline
 from G2Class import G2Class
+from FilterG2s import FilterG2s
 
 
 class PipelineWrapper:
@@ -51,48 +52,57 @@ class FilterContours:
         #print(len(approxPts[0]))
         return cnts, approxPts
 
+def VisionProcessing(image, videoBool):
 
+    if not videoBool:
+        fc = FilterContours(image)
+        cnts, approx = fc.getApprox()
+        sorter = FilterG2s()
+        approxID = 0;
+        for c in cnts:
+    	    sorter.addG2(c, approx, approxID)
+            #approxID += 1
 
-def VisionProcessing(image):
+        g2 = sorter.findTheG2()
 
-    fc = FilterContours(image)
-    cnts, approx = fc.getApprox()
-    g2 = G2Class(cnts, approx)
-    g2.doEverything()
+    else:
+        #Get video and buffer from terminal as well as image p
+        ap = argparse.ArgumentParser()
+        ap.add_argument("-v", "--video", help = "path  to the (optional) video file")
+        ap.add_argument("-b", "--buffer", type=int, default=64, help="max buffer size")
+        args = vars(ap.parse_args())
 
-    #Get video and buffer from terminal as well as image p
-#    ap = argparse.ArgumentParser()
-#    ap.add_argument("-v", "--video", help = "path  to the (optional) video file")
-#    ap.add_argument("-b", "--buffer", type=int, default=64, help="max buffer size")
-#    args = vars(ap.parse_args())
+        #Initilize tracked points array
+        pts = deque(maxlen = args["buffer"])
 
-    #Initilize tracked points array
-#    pts = deque(maxlen = args["buffer"])
+        #Makes sure were getting a camera stream
+        if not args.get("video", False):
+            camera = cv.VideoCapture(0)
+        else:
+            camera = cv.VideoCapture(args["video"])
+	
 
-    #Makes sure were getting a camera stream
-#    if not args.get("video", False):
-#        camera = cv.VideoCapture(0)
-#    else:
-#        camera = cv.VideoCapture(args["video"])
+        #DA MASTA LOOP
+        while True:
+            #Grab the frame
+            (grabbed, frame) = camera.read()
 
-    #DA MASTA LOOP
-#    while True:
-        #Grab the frame
-#        (grabbed, frame) = camera.read()
+            #Stop the loop if the camera stops streaming
+            if args.get("video") and not grabbed:
+                break
 
-        #Stop the loop if the camera stops streaming
-#        if args.get("video") and not grabbed:
-#            break
-
-        #Resize image and run it through the pipeline
-#        frame = imutils.resize(frame, width = 1000)
-
-#        frame = pw.processImage(frame)
-#        fc.getApprox()
-
-
-
-image = cv.imread("test.jpg")
-VisionProcessing(image)
+            #Resize image and run it through the pipeline
+            frame = imutils.resize(frame, width = 1000)
+            frame = pw.processImage(frame)
+            cnts, approx = fc.getApprox()
+            sorter = FilterG2s()
+            approxID = 0;
+            for c in cnts:
+                sorter.addG2(c, approx, approxID)
+                #approxID += 1
+	
+    
+image = cv.imread("t.jpg")
+VisionProcessing(image, 0)
 
 

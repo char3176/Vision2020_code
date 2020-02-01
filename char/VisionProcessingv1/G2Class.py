@@ -27,10 +27,8 @@ class G2Class:
         #Averages
         self.avgPts = []
         self.test1 = []
-        #Vision Tape Constants
-        self.LTtoRTLen = 39.25
-        #Average between inner and outer lengths
-        self.sideLen = (17.5 + 19.625) / 2
+        #Average ratio of upper vs lower side
+        self.upperOverLowerRatio = 1.69
         #*#*#*  Need to loop over approx "len(approx)" times doing below conditional
         numOfPointSets = len(approx)
         #Loops over pointsets
@@ -167,12 +165,13 @@ class G2Class:
             self.avgPts.append(LTpts)
             self.avgPts.append(LBpts)
             self.avgPts.appemd(RBpts)
-        print("avgRTpts: ",self.RTpts)
-        print("RBpts: ",self.RBpts)
-        print("LBpts: ",self.LBpts)
-        print("LTpts: ",self.LTpts)
+        print()
+        print("avgRT: ",self.avgPts[0])
+        print("avgLT: ",self.avgPts[1])
+        print("avgLB: ",self.avgPts[2])
+        print("avgRB: ",self.avgPts[3])
 
-    def calcDistance(self,point1, point2):
+    def calcDistance(self, point1, point2):
         xDiff = point1[0] - point2[0]
         yDiff = point1[1] - point2[1]
         dist = math.sqrt((xDiff * xDiff) + (yDiff * yDiff))
@@ -188,11 +187,9 @@ class G2Class:
         self.LBtoRBImgDist = math.sqrt((xDiff * xDiff) + (yDiff * yDiff))
         #Find the ratio
         distRatioImg = self.LTtoRTImgDist/self.LBtoRBImgDist
-        distRatioReal = self.LTtoRTLen / self.sideLen
         #If ratios aren't similar, we're not looking at a G2
-        if abs(distRatioImg - distRatioReal) < 0.1:
+        if abs(distRatioImg - self.upperOverLowerRatio) < 0.15:
            self.isAG2 = True
-           print("self.isAG2: ")
         #Go to next text if it passed the first
         if self.isAG2:
             #Eq1 refers to line equation of the line between Quads 2 and 4
@@ -202,45 +199,58 @@ class G2Class:
             deltaY = self.avgPts[3][1] - self.avgPts[1][1]
             deltaX = self.avgPts[3][0] - self.avgPts[1][0]
             slopeEq1 = deltaY/deltaX
-            yIntEq1 = slope * self.avgPts[1][0]
+            yIntEq1 = self.avgPts[1][1] - (slopeEq1 * self.avgPts[1][0])
             #Calculate the y=mx+b equation of eq2 using point slope
             slopeEq2 = -deltaX/deltaY
-            yIntEq2 = (slopeEq2 * self.avgPts[2][0]) + self.avgPts[2][1]
+            yIntEq2 = (slopeEq2 * -self.avgPts[2][0]) + self.avgPts[2][1]
             #Calculate the intersection point of Eq1 and Eq2
-            xInt = (int)((yIntEq2 - yIntEq1) / (slope - slopeEq2))
+            xInt = (int)((yIntEq2 - yIntEq1) / (slopeEq1 - slopeEq2))
             yInt = (int)(slopeEq1 * xInt) + yIntEq1
             #Find the three side lengths
             Q2toQ3 = self.calcDistance(self.avgPts[1], self.avgPts[2])
-            Q3toQ4 = self.calcDistacne(self.avgPts[2], self.avgPts[3])
+            Q3toQ4 = self.calcDistance(self.avgPts[2], self.avgPts[3])
             sharedSide = self.calcDistance(self.avgPts[2], [xInt, yInt])
+            print("sharedSideLen", self.calcDistance(self.avgPts[2], [xInt, yInt]))
+            print("1to2", self.calcDistance(self.avgPts[1], self.avgPts[2]))
+            print("2to3", self.calcDistance(self.avgPts[2], self.avgPts[3]))
             #Use trig to calculate angles
-            ang1 = math.degrees(math.cos(sharedSide / Q2toQ3))
-            ang2 = math.degrees(math.cos(sharedSide / Q3toQ4))
+            print("ang1 Math: cos of", sharedSide, "/", Q2toQ3, " = ", math.cos(sharedSide / Q2toQ3))
+            print("ang1 Math: cos of", sharedSide, "/", Q3toQ4, " = ", math.cos(sharedSide / Q3toQ4))
+            ang1 = 90 - math.degrees(math.sin(sharedSide / Q2toQ3))
+            ang2 = 90 - math.degrees(math.sin(sharedSide / Q3toQ4))
 
             #FIND THE SECOND TWO ANGLES
-            #Eq1 refers to line equation of the line between Quads 1 and 3
-            #Eq2 refers to the equation of the perp line between Quad 2
+            #Eq1 refers to line equation of the line between Quads 2 and 4
+            #Eq2 refers to the equation of the perp line between Quad 3
                 #and the point of intersection of eq1
             #Calculate the y=mx+b equation of eq1
-            deltaY = self.avgPts[2][1] - self.avgPts[0][1]
-            deltaX = self.avgPts[2][0] - self.avgPts[0][0]
+            deltaY = self.avgPts[3][1] - self.avgPts[1][1]
+            deltaX = self.avgPts[3][0] - self.avgPts[1][0]
             slopeEq1 = deltaY/deltaX
-            yIntEq1 = slope * self.avgPts[2][0]
+            yIntEq1 = self.avgPts[1][1] - (slopeEq1 * self.avgPts[1][0])
             #Calculate the y=mx+b equation of eq2 using point slope
             slopeEq2 = -deltaX/deltaY
-            yIntEq2 = (slopeEq2 * self.avgPts[3][0]) + self.avgPts[3][1]
+            yIntEq2 = (slopeEq2 * -self.avgPts[2][0]) + self.avgPts[2][1]
             #Calculate the intersection point of Eq1 and Eq2
-            xInt = (int)((yIntEq2 - yIntEq1) / (slope - slopeEq2))
+            xInt = (int)((yIntEq2 - yIntEq1) / (slopeEq1 - slopeEq2))
             yInt = (int)(slopeEq1 * xInt) + yIntEq1
             #Find the three side lengths
-            Q4toQ1 = self.calcDistance(self.avgPts[1], self.avgPts[2])
-            sharedSide = self.calcDistance(self.avgPts[3], [xInt, yInt])
+            Q2toQ3 = self.calcDistance(self.avgPts[1], self.avgPts[2])
+            Q3toQ4 = self.calcDistance(self.avgPts[2], self.avgPts[3])
+            sharedSide = self.calcDistance(self.avgPts[2], [xInt, yInt])
+            print("sharedSideLen", self.calcDistance(self.avgPts[2], [xInt, yInt]))
+            print("1to2", self.calcDistance(self.avgPts[1], self.avgPts[2]))
+            print("2to3", self.calcDistance(self.avgPts[2], self.avgPts[3]))
             #Use trig to calculate angles
-            ang3 = math.degrees(math.cos(sharedSide / Q3toQ4))
-            ang4 = math.degrees(math.cos(sharedSide / Q4toQ1))
+            print("ang1 Math: cos of", sharedSide, "/", Q2toQ3, " = ", math.cos(sharedSide / Q2toQ3))
+            print("ang1 Math: cos of", sharedSide, "/", Q3toQ4, " = ", math.cos(sharedSide / Q3toQ4))
+            ang3 = 90 - math.degrees(math.sin(sharedSide / Q2toQ3))
+            ang4 = 90 - math.degrees(math.sin(sharedSide / Q3toQ4))
 
+            print("1: ", ang1, "2: ", ang2, "3: ", ang3, "4: ", ang4)
+            print("sum: ", ang1 + ang2 + ang3 + ang4)
             #Check if the angles' sum are around 240 degrees
-            if abs((ang1 + ang2 + ang3 + ang4) - 240) != 10:
+            if abs((ang1 + ang2 + ang3 + ang4) - 240) >= 10:
                 self.isAG2 = False
 
 
@@ -251,7 +261,7 @@ class G2Class:
         self.seperateQuadsIntoIvO()
         self.findAvgs()
         self.amIG2()
-        print(self.isAG2)
+        print("isAG2: ", self.isAG2)
 
     #doEverything()
 
