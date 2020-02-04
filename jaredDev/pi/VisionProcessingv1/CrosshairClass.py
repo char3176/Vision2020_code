@@ -176,7 +176,12 @@ def main(argv=None):
   ap= argparse.ArgumentParser()
   ap.add_argument("-p", "--picamera", type=int, default=1, help="whether or not the Raspi camera should be used")
   args = vars(ap.parse_args())
-  vs = VideoStream(usePiCamera=args["picamera"] > 0, resolution=(320, 240),framerate=60).start()
+#  vs = VideoStream(usePiCamera=args["picamera"] > 0, resolution=(320, 240),framerate=60).start()
+  vs = VideoStream(usePiCamera=args["picamera"] > 0, resolution=(640, 480),framerate=60).start()
+#  vs = VideoStream(usePiCamera=args["picamera"] > 0, resolution=(640, 480),framerate=90).start()
+#  vs = VideoStream(usePiCamera=args["picamera"] > 0, resolution=(320, 240),framerate=60).start()
+#  vs = VideoStream(usePiCamera=args["picamera"] > 0, resolution=(320, 240),framerate=60).start()
+#  vs = VideoStream(usePiCamera=args["picamera"] > 0, resolution=(320, 240),framerate=60).start()
   time.sleep(2.0)
   vs.camera.brightness = 30
   vs.camera.contrast = 100
