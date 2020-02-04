@@ -4,10 +4,10 @@ import math
 class G2Class:
 
 
-    def __init__(self, cnt, approx, G2ID):
-        
-        self.isAG2 = False
+    def __init__(self, cnt, approx, G2ID, frame):
 
+        self.isAG2 = False
+        self.newframe = frame
         self.cnt = cnt
         self.approx = approx[0]
         self.G2ID = G2ID
@@ -44,39 +44,40 @@ class G2Class:
                 self.approxPts.append(coordArray2)
         #print("approxPts", self.approxPts)
         red = [0,0,255]
-        tempimage = cv2.imread("20200117-202126_16-100-74_2.jpg")
+        tempimage = self.newframe
         #print("tempimage: ",tempimage)
         #print("tempimage len: ",len(tempimage))
         #print("tempimage[0] len: ",len(tempimage[0]))
         approxPtsLength = len(self.approxPts)
         #print(approxPtsLength)
-#        for i in range(0,approxPtsLength):
-#          #print("i: ", i)
-#          #print(self.approxPts[i][0],self.approxPts[i][1])
-#          #print(tempimage[self.approxPts[i][1],self.approxPts[i][0]])
-#          tempimage[self.approxPts[i][1],self.approxPts[i][0]]=red
-#        cv2.drawContours(tempimage, [self.approx], -1, (0, 0, 255), 2)
-#        cv2.drawContours(tempimage, self.approx, -1, (0, 255, 0), 4)
-#        M = cv2.moments(self.cnt)
+        for i in range(0,approxPtsLength):
+          #print("i: ", i)
+          #print(self.approxPts[i][0],self.approxPts[i][1])
+          #print(tempimage[self.approxPts[i][1],self.approxPts[i][0]])
+          tempimage[self.approxPts[i][1],self.approxPts[i][0]]=red
+        cv2.drawContours(tempimage, [self.approx], -1, (0, 0, 255), 2)
+        cv2.drawContours(tempimage, self.approx, -1, (0, 255, 0), 4)
+        M = cv2.moments(self.cnt)
 #        #print(M)
-#        self.cX = int(M["m10"] / M["m00"])
-#        cX = int(M["m10"] / M["m00"])
-#        self.cY = int(M["m01"] / M["m00"])
-#        cY = int(M["m01"] / M["m00"]) - 20
+        self.cX = int(M["m10"] / M["m00"])
+        cX = int(M["m10"] / M["m00"])
+        self.cY = int(M["m01"] / M["m00"])
+        cY = int(M["m01"] / M["m00"]) - 20
 #        #print(self.cX,self.cY)
-#        self.centroid = [self.cX, self.cY]
-#        (x, y, w, h) = cv2.boundingRect(self.approx)
-#        (startX, endX) = (int(cX - (h * 0.25)), int(cX + (h * 0.25)))
-#        (startY, endY) = (int(cY - (h * 0.25)), int(cY + (h * 0.25)))
-#        cv2.line(tempimage, (startX, cY), (endX, cY), (0, 255, 0), 2)
-#        cv2.line(tempimage, (cX, startY), (cX, endY), (0, 255, 0), 2)
-#        myradius = ((endY - startY) / 2 ) * 0.8
-#        cv2.circle(tempimage, (int(cX), int(cY)), int(myradius), (0,255,0), 1)
-#        cv2.circle(tempimage, (int(cX), int(cY)), int(myradius * 0.3), (0,0,255), 1)
+        self.centroid = [self.cX, self.cY]
+        (x, y, w, h) = cv2.boundingRect(self.approx)
+        (startX, endX) = (int(cX - (h * 0.25)), int(cX + (h * 0.25)))
+        (startY, endY) = (int(cY - (h * 0.25)), int(cY + (h * 0.25)))
+        cv2.line(tempimage, (startX, cY), (endX, cY), (0, 255, 0), 2)
+        cv2.line(tempimage, (cX, startY), (cX, endY), (0, 255, 0), 2)
+        myradius = ((endY - startY) / 2 ) * 0.8
+        cv2.circle(tempimage, (int(cX), int(cY)), int(myradius), (0,255,0), 1)
+        cv2.circle(tempimage, (int(cX), int(cY)), int(myradius * 0.3), (0,0,255), 1)
+        self.newframe = tempimage
 #        cv2.imwrite('t.jpg',tempimage)
 
 
-      ##### NEED TO FIX APPROXPTS ARRAY ABOVE TO INCLUDE/ACCOUNT FOR MULTIPE ---should be accounted for with 
+      ##### NEED TO FIX APPROXPTS ARRAY ABOVE TO INCLUDE/ACCOUNT FOR MULTIPE ---should be accounted for with
       ##### "PtsSets" incase of more than 1 contour
       ##### ANNNDDDD decide what to do if we are fu-bar'd with more than one match later
       ##### lower down in Jake's logic
@@ -236,10 +237,11 @@ class G2Class:
             ang3 = 90 - math.degrees(math.sin(sharedSide / Q2toQ3))
             ang4 = 90 - math.degrees(math.sin(sharedSide / Q3toQ4))
 
-            #Check if the angles' sum are around 240 degrees
-            if abs((ang1 + ang2 + ang3 + ang4) - 240) >= 15:
-                self.isAG2 = False		
-
+            #Check if the angles' sum are around 250 degrees because its usually 250 for some reason
+            if abs((ang1 + ang2 + ang3 + ang4) - 250) >= 15:
+                self.isAG2 = False
+        print("Sum of angles: ", ang1 + ang2 + ang3 + ang4)
+        print("distRatioImg: ", distRatioImg, "upperOverLowerRatio ", self.upperOverLowerRatio)
 
     def doEverything(self):
         print()
