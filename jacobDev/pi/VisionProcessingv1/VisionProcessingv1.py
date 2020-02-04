@@ -1,5 +1,7 @@
-
+from imutils.video import VideoStream
+import time
 import cv2 as cv
+import picamera
 import imutils
 import argparse
 import numpy as np
@@ -8,7 +10,7 @@ from collections import deque
 
 from grip import GripPipeline
 from FilterG2s import FilterG2s
-
+from G2Class import G2Class
 
 class PipelineWrapper:
 
@@ -53,67 +55,52 @@ class FilterContours:
 
 
 
-def VisionProcessing(image, isAVideo):
+def findG2InFrame(frame):
 
-    if not isAVideo:
-        fc = FilterContours(image)
-        cnts, approx = fc.getApprox()
-        sorter = FilterG2s()
-        G2ID = 0
-        for c in cnts:
-            sorter.addG2(c, approx, G2ID)
-            G2ID += 1
+    fc = FilterContours(frame)
+    cnts, approx = fc.getApprox()
+    sorter = FilterG2s()
+    G2ID = 0
+    for c in cnts:
+        sorter.addG2(c, approx, G2ID, frame)
+        G2ID += 1
 
-        g2 = sorter.findTheG2()
-
-    else:
-        #Get video and buffer from terminal as well as image p
-        ap = argparse.ArgumentParser()
-        ap.add_argument("-v", "--video", help = "path  to the (optional) video file")
-        ap.add_argument("-b", "--buffer", type=int, default=64, help="max buffer size")
-        args = vars(ap.parse_args())
-
-        #Initilize tracked points array
-        pts = deque(maxlen = args["buffer"])
-
-        #Makes sure were getting a camera stream
-        if not args.get("video", False):
-            camera = cv.VideoCapture(0)
-        else:
-            camera = cv.VideoCapture(args["video"])
-
-        #DA MASTA LOOP
-        while True:
-            #Grab the frame
-            (grabbed, frame) = camera.read()
-
-            #Stop the loop if the camera stops streaming
-            if args.get("video") and not grabbed:
-                print("THIS LINE IS REACHED")
-                break
-
-            #Run image through the pipeline and find G2
-            frame = pw.processImage(frame)
-            fc = FilterContours(image)
-            cnts, approx = fc.getApprox()
-            sorter = FilterG2s()
-            G2ID = 0
-            for c in cnts:
-                sorter.addG2(c, approx, G2ID)
-                G2ID += 1
-
-            g2 = sorter.findTheG2()
-            cv.imshow("VP", frame)
-            key = cv.waitKey(1) & 0xFF
-	    
-            if key == ord("q"):
-                break
+    g2 = sorter.findTheOneTrueG2()
+    #print("getG2FromFrame g2 = ", g2)
+    return g2
 
 
 
-image = cv.imread("t5.jpg")
-VisionProcessing(image, True)
+ap = argparse.ArgumentParser()
+ap.add_argument("-p", "--picamera", type=int, default=1, help="whether or not the Raspi camera should be used")
+args = vars(ap.parse_args())
+vs = VideoStream(usePiCamera=args["picamera"] > 0, resolution=(320, 240),framerate=60).start()
+time.sleep(2.0)
+vs.camera.brightness = 30
+vs.camera.contrast = 100
+vs.camera.saturation = 100
+
+#DA MASTA LOOP
+while True:
+        #Grab the frame
+        frame = vs.read()
+        #frame = imutils.resize(frame, width=320)
+        #frame = imutils.rotate(frame, 90)
+
+        #with picamera.array.PiRGBArray(camera) as stream:
+            #camera.capture(stream, format="bgr")
+            #frame = stream.array
+
+        g2 = findG2InFrame(frame)
+        if g2 is not None:
+          frame = g2.drawFittingOnFrame(frame)
+
+        #frame = VisionProcessing(frame)
+        cv.imshow("VP", frame)
+        key = cv.waitKey(1) & 0xFF
+
+        if key == ord("q"):
+            break
+
 cv.destroyAllWindows()
-
-
-
+vs.stop()
