@@ -10,7 +10,7 @@ from collections import deque
 
 from grip import GripPipeline
 from FilterG2s import FilterG2s
-
+from G2Class import G2Class
 
 class PipelineWrapper:
 
@@ -55,24 +55,26 @@ class FilterContours:
 
 
 
-def VisionProcessing(image):
+def findG2InFrame(frame):
 
-    fc = FilterContours(image)
+    fc = FilterContours(frame)
     cnts, approx = fc.getApprox()
     sorter = FilterG2s()
     G2ID = 0
     for c in cnts:
-        sorter.addG2(c, approx, G2ID, image)
+        sorter.addG2(c, approx, G2ID, frame)
         G2ID += 1
 
-    g2 = sorter.findTheG2()
+    g2 = sorter.findTheOneTrueG2()
+    #print("getG2FromFrame g2 = ", g2)
+    return g2
 
 
 
 ap = argparse.ArgumentParser()
-ap.add_argument("-p", "--picamera",     type=int, default=1, help="whether or   not the Raspi camera should be used")
+ap.add_argument("-p", "--picamera", type=int, default=1, help="whether or not the Raspi camera should be used")
 args = vars(ap.parse_args())
-vs =                                    VideoStream(usePiCamera=args["picamera"] > 0, resolution=(320, 240),framerate=60).start()
+vs = VideoStream(usePiCamera=args["picamera"] > 0, resolution=(320, 240),framerate=60).start()
 time.sleep(2.0)
 vs.camera.brightness = 30
 vs.camera.contrast = 100
@@ -82,25 +84,16 @@ vs.camera.saturation = 100
 while True:
         #Grab the frame
         frame = vs.read()
-        print(frame)
-        frame = imutils.resize(frame, width=400)
-        print(frame)
+        #frame = imutils.resize(frame, width=320)
         #frame = imutils.rotate(frame, 90)
 
         #with picamera.array.PiRGBArray(camera) as stream:
             #camera.capture(stream, format="bgr")
             #frame = stream.array
 
-        fc = FilterContours(frame)
-        cnts, approx = fc.getApprox()
-        sorter = FilterG2s()
-        G2ID = 0
-        for c in cnts:
-          sorter.addG2(c, approx, G2ID, frame)
-          G2ID += 1
-          g2 = sorter.findTheG2
-          #print(g2.newframe)
-          #frame = g2.newframe
+        g2 = findG2InFrame(frame)
+        if g2 is not None:
+          frame = g2.drawFittingOnFrame(frame)
 
         #frame = VisionProcessing(frame)
         cv.imshow("VP", frame)
