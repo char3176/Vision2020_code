@@ -1,5 +1,15 @@
 import numpy as np
 import cv2 as cv
+import sys
+from imutils.video import VideoStream
+import time
+import picamera
+import imutils
+import argparse
+
+
+
+
 '''
 THIS is v1 (scroll down for v2)
 
@@ -17,7 +27,7 @@ class CHclass:
         self.range = 100
         self.gradDeviate = [int(self.range * .5), int(self.range * .75), int(self.range)]
         self.gradSize = 20
-        
+
 
     # draws the crosshair on the image and the circle in the middle
     def drawCrosshair(self):
@@ -162,11 +172,46 @@ class CHclass:
         return self.after
 
 
-# DA MASTA SCRIPT
-img = np.zeros((600, 600, 3), np.uint8)
-scale = 1
-CHover = CHclass(img, scale)
-imgCross = CHover.drawCross()
-imgGrads = CHover.drawGrads()
-imgBars = CHover.drawBars()
-cv.imshow("CH v2", imgBars)
+def main(argv=None):
+  ap= argparse.ArgumentParser()
+  ap.add_argument("-p", "--picamera", type=int, default=1, help="whether or not the Raspi camera should be used")
+  args = vars(ap.parse_args())
+  vs = VideoStream(usePiCamera=args["picamera"] > 0, resolution=(320, 240),framerate=60).start()
+  time.sleep(2.0)
+  vs.camera.brightness = 30
+  vs.camera.contrast = 100
+  vs.camera.saturation = 100
+
+  #DA MASTA LOOP
+  while True:
+          #Grab the frame
+          frame = vs.read()
+          #frame = imutils.resize(frame, width=320)
+          #frame = imutils.rotate(frame, 90)
+
+          #with picamera.array.PiRGBArray(camera) as stream:
+              #camera.capture(stream, format="bgr")
+              #frame = stream.array
+
+          #img = np.zeros((600, 600, 3), np.uint8)
+          img = frame.copy()
+          scale = 1
+          CHover = CHclass(img, scale)
+          imgCross = CHover.drawCross()
+          imgGrads = CHover.drawGrads()
+          imgBars = CHover.drawBars()
+          cv.imshow("CH v2", imgBars)
+
+          #frame = VisionProcessing(frame)
+#          cv.imshow("VP", frame)
+          key = cv.waitKey(1) & 0xFF
+
+          if key == ord("q"):
+              break
+
+  cv.destroyAllWindows()
+  vs.stop()
+
+
+if __name__ == "__main__":
+  main(sys.argv)
