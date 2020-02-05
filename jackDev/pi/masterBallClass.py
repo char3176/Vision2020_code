@@ -5,6 +5,7 @@ import argparse
 from collections import deque
 import sys
 import picamera
+from imutils.video import VideoStream
 
 from ballPipeline import BallPipeline
 from ballClass import BallClass
