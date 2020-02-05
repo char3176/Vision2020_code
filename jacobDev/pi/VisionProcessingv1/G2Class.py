@@ -12,7 +12,7 @@ class G2Class:
         self.originalFrame = frame.copy()
         self.newframe = frame
         self.cnt = cnt
-        self.approx = approx[0]
+        self.approx = approx[G2ID]
         self.G2ID = G2ID
         self.approxPts = []
         self.numApproxPts = []
@@ -82,7 +82,7 @@ class G2Class:
 
 
     def seperateIntoQuads(self):
-        if self.numApproxPts == 4 or 8:
+        if self.numApproxPts == 4 or self.numApproxPts >= 8:
           #print("seperateIntoQuads: self.approxPts: ", self.approxPts)
           for pnt in self.approxPts:
             if pnt[0] > self.cX:
@@ -99,6 +99,7 @@ class G2Class:
           #print("seperateIntoQuads: self.LTpts: ",self.LTpts)
           #print("seperateIntoQuads: self.LBpts: ",self.LBpts)
           #print("seperateIntoQuads: self.RBpts: ",self.RBpts)
+
 
     def seperateQuadsIntoIvO(self):
         if len(self.approxPts) == 8 and self.hasEqualQuadrants(2):
@@ -271,7 +272,7 @@ class G2Class:
     def drawFittingOnFrame(self, frame):
         #*#*#*  Need to loop over approx "len(approx)" times doing below conditional
         tempimage = frame.copy()
-        #red = [0,0,255]
+        red = [0,0,255]
         #cv2.circle(tempimage, (int(100), int(100)), int(30), (0,255,0), 2)
         #print("tempimage: ",tempimage)
         #print("tempimage len: ",len(tempimage))
@@ -325,4 +326,5 @@ class G2Class:
         #  frame = self.drawFittingOnFrame(frame)
         print("Is a G2: ", self.isAG2)
         print("IsInROF: ", self.isInRingOfFire)
+        print("Total points: ", len(self.approx))
 
