@@ -49,16 +49,16 @@ def main(argv=None):
         mb = ManyTo1B(cnts)
         mb.coord()
           
-        cv.imshow("BallTrack", img)
+        cv2.imshow("BallTrack", img)
 
         #frame = VisionProcessing(frame)
         #cv.imshow("VP", frame)
-        key = cv.waitKey(1) & 0xFF
+        key = cv2.waitKey(1) & 0xFF
 
         if key == ord("q"):
             break
 
-    cv.destroyAllWindows()
+    cv2.destroyAllWindows()
     vs.stop()
 
 
