@@ -11,7 +11,7 @@ import argparse
 
 
 '''
-THIS is v1 (scroll down for v2)
+THIS is v0 (scroll down for others, along with current)
 
 class CHclass:
 
@@ -73,22 +73,18 @@ cv.imshow("Blank", imgCentering)
 
 
 
-THIS IS v2
+Below was v1, currently v1.1
 '''
-
-import cv2 as cv
-import numpy as np
-
 
 class CHclass:
 
     def __init__(self, img, scale):
         # ADJUST these variables for different results
         # self.coverageX is how far the crosshair extends from center horizontally, self.coverageY is vertically
-        self.coverageX = 150
-        self.coverageY = 150
+        self.coverageX = 100
+        self.coverageY = 100
         # self.scope is how far the farthest graduation is out from the center, logically is <= both coverage values
-        self.scope = 100
+        self.scope = 80
         # self.gradDevi is how far each graduation deviates from the center
         # a value of 1 is the distance out of self.scope, while .5 is half that distance
         # the first entry is the circle radius, and each entry is an additional graduation
@@ -98,22 +94,22 @@ class CHclass:
         self.CrThick = 2
         self.CrCol = [255, 40, 0]
         # circle
-        self.cirThick = 3
+        self.cirThick = 2
         self.cirCol = [0, 0, 255]
         # graduations
-        self.gradLen = 20
+        self.gradLen = 15
         # how much bigger each graduation is than the last
-        self.gradInc = 15
+        self.gradInc = 10
         self.gradThick = 2
         self.gradCol = [255, 260, 15]
         # bar (thickness only)
-        self.barThick = 10
+        self.barThick = 4
 
         # LEAVE these alone, they just manipulate the adjustable ones
         self.img = img
         self.scale = scale
-        self.width = len(self.img[1])
-        self.height = len(self.img[0])
+        self.width = len(self.img[0])
+        self.height = len(self.img)
         self.center = [int(self.width / 2), int(self.height / 2)]
         # multiplies all important variables by the entered scale ( if the scale < 1, values get smaller, and they get bigger if the scale < 1 )
         self.coverageX = int(self.coverageX * self.scale)
@@ -132,10 +128,15 @@ class CHclass:
 
 
     # draws the crosshair and circle on the image
+    # There are now four lines (two vertical and two horizontal) so that the inside of the circle is empty
     def drawCross(self):
-        self.after = cv.line(self.img, ((self.center[0] - self.coverageX), self.center[1]), ((self.center[0] + self.coverageX), self.center[1]),
+        self.after = cv.line(self.img, ((self.center[0] - self.coverageX), self.center[1]), ((self.center[0] - self.cirRad), self.center[1]),
             (self.CrCol[0], self.CrCol[1], self.CrCol[2]), self.CrThick)
-        self.after = cv.line(self.after, (self.center[0], (self.center[1] - self.coverageY)), (self.center[0], (self.center[1] + self.coverageY)),
+        self.after = cv.line(self.after, ((self.center[0] + self.coverageX), self.center[1]), ((self.center[0] + self.cirRad), self.center[1]),
+            (self.CrCol[0], self.CrCol[1], self.CrCol[2]), self.CrThick)
+        self.after = cv.line(self.after, (self.center[0], (self.center[1] - self.coverageY)), (self.center[0], (self.center[1] - self.cirRad)),
+            (self.CrCol[0], self.CrCol[1], self.CrCol[2]), self.CrThick)
+        self.after = cv.line(self.after, (self.center[0], (self.center[1] + self.coverageY)), (self.center[0], (self.center[1] + self.cirRad)),
             (self.CrCol[0], self.CrCol[1], self.CrCol[2]), self.CrThick)
         self.after = cv.circle(self.after, (self.center[0], self.center[1]), self.cirRad, (self.cirCol[0], self.cirCol[1], self.cirCol[2]), self.cirThick)
         return self.after
@@ -202,12 +203,23 @@ def main(argv=None):
 
           #img = np.zeros((600, 600, 3), np.uint8)
           img = frame.copy()
-          scale = 1
+          # sets the scale based on resolution (outside a class for now, also note that scale currently doesn't affect thickness)
+          if len(img) == 240:
+            scale = .4
+          elif len(img) == 480:
+            scale = .8
+          elif len(img) == 720:
+            scale = 1.2
+          elif len(img) == 1080:
+            scale = 1.8
+          else:
+            scale = 2
+
           CHover = CHclass(img, scale)
           imgCross = CHover.drawCross()
           imgGrads = CHover.drawGrads()
           imgBars = CHover.drawBars()
-          cv.imshow("CH v2", imgBars)
+          cv.imshow("Crosshair (v1.1)", imgBars)
 
           #frame = VisionProcessing(frame)
 #          cv.imshow("VP", frame)

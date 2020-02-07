@@ -6,16 +6,17 @@ class G2Class:
 
     def __init__(self, cnt, approx, G2ID, frame):
 
+        #Booleans
         self.isAG2 = False
         self.isInRingOfFire = False
 
+        #Crap
         self.originalFrame = frame.copy()
         self.newframe = frame
         self.cnt = cnt
         self.approx = approx[G2ID]
         self.G2ID = G2ID
         self.approxPts = []
-        self.numApproxPts = []
         self.centroid = []
         self.cX = 0
         self.cY = 0
@@ -26,29 +27,24 @@ class G2Class:
         self.LBpts = []
         self.RBpts = []
 
-        #Outer Points
-        self.outerPts = []
-        #Inner Points
-        self.innerPts = []
-        #Averages
+        #Averages of quadrants
         self.avgPts = []
-        self.test1 = []
-        #Vision Tape Constant
+        #Vision Tape Ratio Constant
         self.upperOverLowerRatio = 1.69
-        self.isInRingOfFire = False
 
         #print("__init__: approx: ",approx)
         #Checking if pointset has 4 or 8 elements
-        if len(self.approx[self.G2ID]) == 4 or 8:
+        #print("len(self.approx) == 4 or len(self.approx[) >= 8")
+        #print(len(self.approx) == 4, "or", len(self.approx) >= 8)
+        if len(self.approx) == 4 or len(self.approx) >= 8:
             #Loops over points
             numOfPoints = len(self.approx)
-            print("__init__: numOfPoints = ", numOfPoints)
+            #print("__init__: numOfPoints = ", numOfPoints)
             for pointsIndex in range(0, numOfPoints):
                 coordArray = self.approx[pointsIndex][0]
                 coordArray2 = coordArray.tolist()
                 self.approxPts.append(coordArray2)
-            self.numApproxPts=len(self.approxPts)
-        print("__init__: approxPts: ", self.approxPts)
+        #print("__init__: approxPts: ", self.approxPts)
 
       ##### NEED TO FIX APPROXPTS ARRAY ABOVE TO INCLUDE/ACCOUNT FOR MULTIPE ---should be accounted for with
       ##### "PtsSets" incase of more than 1 contour
@@ -81,103 +77,59 @@ class G2Class:
             return False
 
 
+    def getAveragePoint(self, pointList):
+        pointTotal = 0
+        totalX = 0
+        totalY = 0
+        for point in pointList:
+            pointTotal += 1
+            totalX += point[0]
+            totalY += point[1]
+        return [(int)(totalX / pointTotal), (int)(totalY / pointTotal)]
+
+
+
     def seperateIntoQuads(self):
-        if self.numApproxPts == 4 or self.numApproxPts >= 8:
-          #print("seperateIntoQuads: self.approxPts: ", self.approxPts)
-          for pnt in self.approxPts:
-            if pnt[0] > self.cX:
-                if pnt[1] < self.cY:
-                    self.RTpts.append(pnt)
+        if (len(self.approxPts) == 4 and self.hasEqualQuadrants(1)) or len(self.approxPts) >= 8:
+            #print("seperateIntoQuads: self.approxPts: ", self.approxPts)
+            for pnt in self.approxPts:
+                if pnt[0] > self.cX:
+                    if pnt[1] < self.cY:
+                        self.RTpts.append(pnt)
+                    else:
+                        self.RBpts.append(pnt)
                 else:
-                    self.RBpts.append(pnt)
-            else:
-                if pnt[1] < self.cY:
-                    self.LTpts.append(pnt)
-                else:
-                    self.LBpts.append(pnt)
-          #print("seperateIntoQuads: self.RTpts: ",self.RTpts)
-          #print("seperateIntoQuads: self.LTpts: ",self.LTpts)
-          #print("seperateIntoQuads: self.LBpts: ",self.LBpts)
-          #print("seperateIntoQuads: self.RBpts: ",self.RBpts)
+                    if pnt[1] < self.cY:
+                        self.LTpts.append(pnt)
+                    else:
+                        self.LBpts.append(pnt)
+        #print("seperateIntoQuads: self.RTpts: ",self.RTpts)
+        #print("seperateIntoQuads: self.LTpts: ",self.LTpts)
+        #print("seperateIntoQuads: self.LBpts: ",self.LBpts)
+        #print("seperateIntoQuads: self.RBpts: ",self.RBpts)
 
-
-    def seperateQuadsIntoIvO(self):
-        if len(self.approxPts) == 8 and self.hasEqualQuadrants(2):
-            #Quadrant 1: RT
-            if self.RTpts[0][0] > self.RTpts[1][0]:
-                self.innerPts.append(self.RTpts[0])
-                self.outerPts.append(self.RTpts[1])
-            else:
-                self.innerPts.append(self.RTpts[1])
-                self.outerPts.append(self.RTpts[0])
-
-            #Quadrant 2: LT
-            if self.LTpts[0][0] > self.LTpts[1][0]:
-                self.innerPts.append(self.LTpts[0])
-                self.outerPts.append(self.LTpts[1])
-            else:
-                self.innerPts.append(self.LTpts[1])
-                self.outerPts.append(self.LTpts[0])
-
-            #Quadrant 3: LB
-            if self.LBpts[0][0] > self.LBpts[1][0]:
-                self.innerPts.append(self.LBpts[0])
-                self.outerPts.append(self.LBpts[1])
-            else:
-                self.innerPts.append(self.LBpts[1])
-                self.outerPts.append(self.LBpts[0])
-
-            #Quadrant 4: RB
-            if self.RBpts[0][0] > self.RBpts[1][0]:
-                self.innerPts.append(self.RBpts[0])
-                self.outerPts.append(self.RBpts[1])
-            else:
-                self.innerPts.append(self.RBpts[1])
-                self.outerPts.append(self.RBpts[0])
-            #print("seperateQuadsIntoIvO: RTpts: ",self.RTpts)
-            #print("seperateQuadsIntoIvO: RBpts: ",self.RBpts)
-            #print("seperateQuadsIntoIvO: LBpts: ",self.LBpts)
-            #print("seperateQuadsIntoIvO: LTpts: ",self.LTpts)
 
     def findAvgs(self):
-        if self.hasEqualQuadrants(2):
-            #Average the two points in each quadrant
-            XCoord = (int)((self.RTpts[0][0] + self.RTpts[1][0])/2)
-            YCoord = (int)((self.RTpts[0][1] + self.RTpts[1][1])/2)
-            self.avgPts.append([XCoord, YCoord])
-            XCoord = (int)((self.LTpts[0][0] + self.LTpts[1][0])/2)
-            YCoord = (int)((self.LTpts[0][1] + self.LTpts[1][1])/2)
-            self.avgPts.append([XCoord, YCoord])
-            XCoord = (int)((self.LBpts[0][0] + self.LBpts[1][0])/2)
-            YCoord = (int)((self.LBpts[0][1] + self.LBpts[1][1])/2)
-            self.avgPts.append([XCoord, YCoord])
-            XCoord = (int)((self.RBpts[0][0] + self.RBpts[1][0])/2)
-            YCoord = (int)((self.RBpts[0][1] + self.RBpts[1][1])/2)
-            self.avgPts.append([XCoord, YCoord])
-            #print("avgRTpts: ", self.avgPts[0])
-            #print("avgLTpts: ", self.avgPts[1])
-            #print("avgLBpts: ", self.avgPts[2])
-            #print("avgRBpts: ", self.avgPts[3])
-            #print("Centroid: ", self.centroid)
+        if len(self.approxPts) >= 8:
+            if len(self.RTpts) > 0:
+                self.avgPts.append(self.getAveragePoint(self.RTpts))
+            if len(self.LTpts) > 0:
+                self.avgPts.append(self.getAveragePoint(self.LTpts))
+            if len(self.LBpts) > 0:
+                self.avgPts.append(self.getAveragePoint(self.LBpts))
+            if len(self.RBpts) > 0:
+                self.avgPts.append(self.getAveragePoint(self.RBpts))
         elif self.hasEqualQuadrants(1):
             #If 1 point per quadrant, make the average our only point
-            XCoord = (int)(self.RTpts[0][0])
-            YCoord = (int)(self.RTpts[0][1])
-            self.avgPts.append([XCoord, YCoord])
-            XCoord = (int)(self.LTpts[0][0])
-            YCoord = (int)(self.LTpts[0][1])
-            self.avgPts.append([XCoord, YCoord])
-            XCoord = (int)(self.LBpts[0][0])
-            YCoord = (int)(self.LBpts[0][1])
-            self.avgPts.append([XCoord, YCoord])
-            XCoord = (int)(self.RBpts[0][0])
-            YCoord = (int)(self.RBpts[0][1])
-            self.avgPts.append([XCoord, YCoord])
+            self.avgPts.append(self.RTpts)
+            self.avgPts.append(self.LTpts)
+            self.avgPts.append(self.LBpts)
+            self.avgPts.append(self.RBpts)
             #print("avgRTpts: ", self.avgPts[0])
             #print("avgLTpts: ", self.avgPts[1])
             #print("avgLBpts: ", self.avgPts[2])
             #print("avgRBpts: ", self.avgPts[3])
-            #print("Centroid: ", self.centroid)
+            #print("Centroid: ", self.centroid)\
         else:
             self.isAG2 = False
 
@@ -250,14 +202,14 @@ class G2Class:
                 Q4toQ1 = self.calcDistance(self.avgPts[3], self.avgPts[0])
                 sharedSide = self.calcDistance(self.avgPts[3], [xInt, yInt])
                 #Use trig to calculate angles
-                ang3 = 90 - math.degrees(math.sin(sharedSide / Q2toQ3))
-                ang4 = 90 - math.degrees(math.sin(sharedSide / Q3toQ4))
+                ang3 = 90 - math.degrees(math.sin(sharedSide / Q3toQ4))
+                ang4 = 90 - math.degrees(math.sin(sharedSide / Q4toQ1))
 
                 #Check if the angles' sum are around 250 degrees because its usually 250 for some reason
                 if abs((ang1 + ang2 + ang3 + ang4) - 250) >= 15:
                     self.isAG2 = False
-                print("Sum of angles: ", ang1 + ang2 + ang3 + ang4)
-                print("distRatioImg: ", distRatioImg, "upperOverLowerRatio ", self.upperOverLowerRatio)
+                #print("Sum of angles: ", ang1 + ang2 + ang3 + ang4)
+                #print("distRatioImg: ", distRatioImg, "upperOverLowerRatio ", self.upperOverLowerRatio)
 
     def calcIfInRingOfFire(self, frame, ringOfFireRadiusScale = 0.05):
         width = frame.shape[1]
@@ -265,7 +217,7 @@ class G2Class:
         centerOfFrame = [int(width/2),int(height/2)]
         distance = self.calcDistance(self.centroid, centerOfFrame)
         #print("width = ", width, "height = ", height)
-        print("Distance to ROF: ", distance, "ROF Threshold: ", (ringOfFireRadiusScale * (0.5 * height)))
+        #print("Distance to ROF: ", distance, "ROF Threshold: ", (ringOfFireRadiusScale * (0.5 * height)))
         if distance < (ringOfFireRadiusScale * (0.5 * height)):
             self.isInRingOfFire = True
 
@@ -306,25 +258,23 @@ class G2Class:
 
     def drawCircleOnFrame(self):
         #*#*#*  Need to loop over approx "len(approx)" times doing below conditional
-        numOfPointSets = len(self.approx)
         #print("approx:",approx)
-        red = [0,0,255]
         cv2.circle(self.newframe, (int(100), int(100)), int(30), (0,255,0), 2)
 
     def doEverything(self):
         print()
-        print("COUNTOUR ", self.G2ID, "BEGINS!!")
+        #print("COUNTOUR ", self.G2ID, "BEGINS!!")
         #cv2.drawContours(self.newframe, self.cnt, -1, (0,255,0), 3)
         #cv2.drawContours(self.newframe, [self.cnt], -1, (0,0,255), 3)
         self.calcCentroid()
         self.seperateIntoQuads()
-        self.seperateQuadsIntoIvO()
         self.findAvgs()
         self.amIG2()
         self.calcIfInRingOfFire(self.originalFrame, 0.25)
         #if self.isAG2:
         #  frame = self.drawFittingOnFrame(frame)
         print("Is a G2: ", self.isAG2)
-        print("IsInROF: ", self.isInRingOfFire)
-        print("Total points: ", len(self.approx))
+        #print("IsInROF: ", self.isInRingOfFire)
+        print("Total points: ", len(self.approxPts))
+        #print("END OF CONTOUR ", self.G2ID, "!!")
 
