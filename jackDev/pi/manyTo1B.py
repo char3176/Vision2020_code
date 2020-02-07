@@ -9,7 +9,7 @@ class ManyTo1B:
         print ("start of class")
         self.candidateBalls = []
         self.theOneTrueBall = None
-        #print (cnts)
+        print (cnts)
         self.process(cnts)
         
 
