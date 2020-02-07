@@ -47,8 +47,10 @@ def main(argv=None):
         bp = BallPipeline()
         cnts = bp.process(img)
         mb = ManyTo1B(cnts)
-        mb.coord()
-          
+        #mb.coord()
+        if len(mb.candidateBalls) > 0:
+            cv2.circle(img, mb.theOneTrueBall.centroid, mb.theOneTrueBall.radius, (0, 0, 255), 4)
+            cv2.circle(img, mb.theOneTrueBall.centroid, 4, (0, 0, 255), -1)
         cv2.imshow("BallTrack", img)
 
         #frame = VisionProcessing(frame)
