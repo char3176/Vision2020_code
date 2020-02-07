@@ -13,8 +13,8 @@ class BallPipeline:
         """
 
         self.__cv_gaussianblur_ksize = (1, 1)
-        self.__cv_gaussianblur_sigmax = -7.0
-        self.__cv_gaussianblur_sigmay = -19.0
+        self.__cv_gaussianblur_sigmax = 11.0
+        self.__cv_gaussianblur_sigmay = 11.0
         self.__cv_gaussianblur_bordertype = cv2.BORDER_DEFAULT
 
         self.cv_gaussianblur_output = None
@@ -29,7 +29,7 @@ class BallPipeline:
         self.__cv_erode_src = self.hsv_threshold_output
         self.__cv_erode_kernel = None
         self.__cv_erode_anchor = (-1, -1)
-        self.__cv_erode_iterations = 5.0
+        self.__cv_erode_iterations = 4.0
         self.__cv_erode_bordertype = cv2.BORDER_CONSTANT
         self.__cv_erode_bordervalue = (-1)
 
@@ -38,7 +38,7 @@ class BallPipeline:
         self.__cv_dilate_src = self.cv_erode_output
         self.__cv_dilate_kernel = None
         self.__cv_dilate_anchor = (-1, -1)
-        self.__cv_dilate_iterations = 5.0
+        self.__cv_dilate_iterations = 4.0
         self.__cv_dilate_bordertype = cv2.BORDER_CONSTANT
         self.__cv_dilate_bordervalue = (-1)
 
