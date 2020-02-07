@@ -49,7 +49,7 @@ def main(argv=None):
         mb = ManyTo1B(cnts)
         #mb.coord()
         if len(mb.candidateBalls) > 0:
-            cv2.circle(img, mb.theOneTrueBall.centroid, (int) mb.theOneTrueBall.radius, (0, 0, 255), 4)
+            cv2.circle(img, mb.theOneTrueBall.centroid, int (mb.theOneTrueBall.radius), (0, 0, 255), 4)
             cv2.circle(img, mb.theOneTrueBall.centroid, 4, (0, 0, 255), -1)
         cv2.imshow("BallTrack", img)
 
