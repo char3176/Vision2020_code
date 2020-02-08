@@ -25,7 +25,7 @@ class ManyTo1B:
         for i in range(0, len(cnts)):
             tempBall = BallClass(cnts[i])
             #print (tempBall)
-            print (tempBall.cX, tempBall.cY, tempBall.radius, tempBall.amIBigEnough)
+            #print (tempBall.cX, tempBall.cY, tempBall.radius, tempBall.amIBigEnough)
             if tempBall.checkIfBigEnough():
                 self.candidateBalls.append(tempBall)
             #print (self.candidateBalls)
