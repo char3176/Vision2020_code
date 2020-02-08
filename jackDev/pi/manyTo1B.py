@@ -40,7 +40,7 @@ class ManyTo1B:
             maybe = self.candidateBalls[0]
             numCandidateBalls = len(self.candidateBalls)
             for i in range (0, numCandidateBalls):
-                if maybe.radius >= self.candidateBalls[i].radius:
+                if maybe.radius <= self.candidateBalls[i].radius:
                     maybe = self.candidateBalls[i]
             self.theOneTrueBall = maybe
 
