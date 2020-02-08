@@ -34,9 +34,9 @@ class ManyTo1B:
         
     def thereCanBeOnlyOne(self):
         #print ("there can be only one begins")
-        if len(self.candidateBalls) == 0:
+        #if len(self.candidateBalls) == 0:
             #print("no balls")
-        else:
+        if (len(self.candidateBalls) > 0:
             maybe = self.candidateBalls[0]
             numCandidateBalls = len(self.candidateBalls)
             for i in range (0, numCandidateBalls):
