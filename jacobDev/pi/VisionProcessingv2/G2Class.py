@@ -3,6 +3,16 @@ import math
 
 class G2Class:
 
+    #Camera Parameter Constants
+    CP_LOCAL_FOCALLENGTHX = 1192.3
+    CP_LOCAL_FOCALLENGTHY = 1210.1
+    CP_LOCAL_CENTERPIXELOFFSETX = 334.23 #Pixels
+    CP_LOCAL_CENTERPIXELOFFSETY = 376.71 #Pixels
+
+    #Field Element Constants
+    FE_LOCAL_UPPERLOWERRATIOG2 = 1.69
+    FE_LOCAL_RWG2UPPERWIDTH = 0.9398 #Meters
+    FE_LOCAL_RWG2LOWERWIDTH = 0.4699 #Meters
 
     def __init__(self, cnt, approx, G2ID, frame):
 
@@ -29,8 +39,6 @@ class G2Class:
 
         #Averages of quadrants
         self.avgPts = []
-        #Vision Tape Ratio Constant
-        self.upperOverLowerRatio = 1.69
 
         #print("__init__: approx: ",approx)
         #Checking if pointset has 4 or 8 elements
@@ -140,6 +148,13 @@ class G2Class:
         dist = math.sqrt((xDiff * xDiff) + (yDiff * yDiff))
         return dist
 
+    def calcRange(self):
+        upperPixelWidth = self.calcDistance(self.avgPts[0], self.avgPts[1])   
+        lowerPixelWidth = self.calcDistance(self.avgPts[2], self.avgPts[3])        
+        R1 = self.CP_LOCAL_FOCALLENGTHX * (self.FE_LOCAL_RWG2UPPERWIDTH/upperPixelWidth)
+        R2 = self.CP_LOCAL_FOCALLENGTHX * (self.FE_LOCAL_RWG2LOWERWIDTH/lowerPixelWidth)
+        return R1, R2
+
     def amIG2(self):
         #Run tests if the quadrant test passed
             #print("isAG2 initial: ", self.isAG2)
@@ -155,7 +170,7 @@ class G2Class:
               #Find the ratio
               distRatioImg = LTtoRTImgDist / LBtoRBImgDist
             #If ratios aren't similar, we're not looking at a G2
-              if abs(distRatioImg - self.upperOverLowerRatio) < 0.15:
+              if abs(distRatioImg - self.FE_LOCAL_UPPERLOWERRATIOG2) < 0.15:
                 self.isAG2 = True
 
             #Go to next text if it passed the first
@@ -209,7 +224,6 @@ class G2Class:
                 if abs((ang1 + ang2 + ang3 + ang4) - 250) >= 15:
                     self.isAG2 = False
                 #print("Sum of angles: ", ang1 + ang2 + ang3 + ang4)
-                #print("distRatioImg: ", distRatioImg, "upperOverLowerRatio ", self.upperOverLowerRatio)
 
     def calcIfInRingOfFire(self, frame, ringOfFireRadiusScale = 0.05):
         width = frame.shape[1]
@@ -275,6 +289,10 @@ class G2Class:
         #  frame = self.drawFittingOnFrame(frame)
         print("Is a G2: ", self.isAG2)
         #print("IsInROF: ", self.isInRingOfFire)
-        print("Total points: ", len(self.approxPts))
+        #print("Total points: ", len(self.approxPts))
+        if self.isAG2:
+            R1, R2 = self.calcRange()
+            print("R1: ", R1, "meters   ", R1 * 1/0.0254, "inches", (R2 * 1/0.0254)/12, "feet")
+            print("R2: ", R2, "meters   ", R2 * 1/0.0254, "inches", (R2 * 1/0.0254)/12, "feet")
         #print("END OF CONTOUR ", self.G2ID, "!!")
 

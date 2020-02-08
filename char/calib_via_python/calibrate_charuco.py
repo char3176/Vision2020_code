@@ -98,6 +98,7 @@ try:
     print("Rep Error:", ret)
     print("Camera Matrix:", cameraMatrix)
     print("Distortion Coefficients:", distortionCoeffs)
+    print("stdDeviationsIntrinsics:",stdDeviationsIntrinsics)
     #print("stdDeviationsExtrinsics:",stdDeviationsExtrinsics)
     #print("perViewErrors:",perViewErrors)
 except ValueError as e:
