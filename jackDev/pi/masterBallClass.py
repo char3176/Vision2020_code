@@ -48,7 +48,7 @@ def main(argv=None):
 
         #img = np.zeros((600, 600, 3), np.uint8)
         img = frame.copy()
-        shape = img.shape()
+        shape[] = img.shape()
         scale = 1
         bp = BallPipeline()
         cnts = bp.process(img)
