@@ -15,7 +15,11 @@ from newBallPipeline import NewBallPipeline
 
 def main(argv=None):
     ap= argparse.ArgumentParser()
+    #ap.add_argument("-v", "--video", help="path to the (optional) video file")
+    ap.add_argument("-i", "--input", help="path to the input image file")
+    ap.add_argument("-b", "--buffer", type=int, default=64, help="max buffer size")
     ap.add_argument("-p", "--picamera", type=int, default=1, help="whether or not the Raspi camera should be used")
+    #ap.add_argument("-p", "--picamera", type=int, default=1, help="whether or not the Raspi camera should be used")
     args = vars(ap.parse_args())
 #    vs = VideoStream(usePiCamera=args["picamera"] > 0, resolution=(320, 240),framerate=60).start()
 #    vs = VideoStream(usePiCamera=args["picamera"] > 0, resolution=(640, 480),framerate=60).start()
