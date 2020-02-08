@@ -20,9 +20,9 @@ class BallPipeline:
         self.cv_gaussianblur_output = None
 
         self.__hsv_threshold_input = self.cv_gaussianblur_output
-        self.__hsv_threshold_hue = [16.18705035971223, 46.38225255972695]
-        self.__hsv_threshold_saturation = [0.0, 255.0]
-        self.__hsv_threshold_value = [0.0, 255.0]
+        self.__hsv_threshold_hue = [24.0, 44.0]
+        self.__hsv_threshold_saturation = [100.0, 255.0]
+        self.__hsv_threshold_value = [100.0, 255.0]
 
         self.hsv_threshold_output = None
 
@@ -50,7 +50,7 @@ class BallPipeline:
         self.find_contours_output = None
 
         self.__filter_contours_contours = self.find_contours_output
-        self.__filter_contours_min_area = 270.0
+        self.__filter_contours_min_area = 250.0
         self.__filter_contours_min_perimeter = 0.0
         self.__filter_contours_min_width = 0
         self.__filter_contours_max_width = 1000.0

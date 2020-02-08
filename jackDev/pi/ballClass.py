@@ -19,12 +19,12 @@ class BallClass:
     def getCentroid(self, cnt):
         #print(self.cX, self.cY, self.radius)
         ((self.cX,self.cY), self.radius) = cv2.minEnclosingCircle(cnt)
-        print(self.cX, self.cY, self.radius)
+        #print(self.cX, self.cY, self.radius)
         M = cv2.moments(cnt)
         #print(M)
         self.centroid = (int(M["m10"]/M["m00"]), int(M["m01"]/M["m00"]))
 
     def checkIfBigEnough(self):
-        if self.radius > 5:
+        if self.radius > 20:
             self.amIBigEnough = True
             return True
