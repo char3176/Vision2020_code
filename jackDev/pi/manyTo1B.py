@@ -45,11 +45,11 @@ class ManyTo1B:
                     maybe = self.candidateBalls[i]
             self.theOneTrueBall = maybe
 
-    def calcDistance(self, theOneTrueBall):
-        diameter = 2 * self.theOneTrueBall.radius
-        dist = math.sqrt(2 * (diameter * diameter))
-        return dist
-
+    def calcDistance(self, radius)
+        f_x = 2719.2940207391980
+        F_x = f_x(.14/2*radius)
+        return F_x
+        
     def coord(self):
         if len(self.candidateBalls) > 0:
             print ("Radius: ", self.theOneTrueBall.radius)
