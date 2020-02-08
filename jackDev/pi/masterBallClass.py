@@ -57,7 +57,7 @@ def main(argv=None):
             cv2.circle(img, mb.theOneTrueBall.centroid, int (mb.theOneTrueBall.radius), (0, 0, 255), 4)
             cv2.circle(img, mb.theOneTrueBall.centroid, 4, (0, 0, 255), -1)
             print(mb.calcDistance(mb.theOneTrueBall.radius))
-            print(mb.calcAngle(mb.theOneTrueBall.cX, img))
+            print(mb.calcAngle(mb.theOneTrueBall.cX, img.size()))
         cv2.imshow("BallTrack", img)
 
         #frame = VisionProcessing(frame)
