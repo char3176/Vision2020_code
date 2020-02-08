@@ -46,8 +46,8 @@ class ManyTo1B:
             self.theOneTrueBall = maybe
 
     def calcDistance(self, radius):
-        f_x = 2719.2940207391980 / 20
-        F_x = f_x*(.14/2*radius) #mm
+        f_x = 2.7192940207391980 / 20
+        F_x = f_x*(2*radius/.14) #mm
         #m_F_x = F_x / 1000 #m
         return F_x
         
