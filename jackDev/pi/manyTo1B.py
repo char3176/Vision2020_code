@@ -36,7 +36,7 @@ class ManyTo1B:
         #print ("there can be only one begins")
         #if len(self.candidateBalls) == 0:
             #print("no balls")
-        if (len(self.candidateBalls) > 0:
+        if len(self.candidateBalls) > 0:
             maybe = self.candidateBalls[0]
             numCandidateBalls = len(self.candidateBalls)
             for i in range (0, numCandidateBalls):
