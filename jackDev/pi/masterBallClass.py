@@ -48,7 +48,6 @@ def main(argv=None):
 
         #img = np.zeros((600, 600, 3), np.uint8)
         img = frame.copy()
-        shape = img.shape
         scale = 1
         bp = BallPipeline()
         cnts = bp.process(img)
@@ -58,7 +57,7 @@ def main(argv=None):
             cv2.circle(img, mb.theOneTrueBall.centroid, int (mb.theOneTrueBall.radius), (0, 0, 255), 4)
             cv2.circle(img, mb.theOneTrueBall.centroid, 4, (0, 0, 255), -1)
             print(mb.calcDistance(mb.theOneTrueBall.radius))
-            print(mb.calcAngle(mb.theOneTrueBall.cX, shape[1]))
+            print(mb.calcAngle(mb.theOneTrueBall.cX, img.shape[1]))
         cv2.imshow("BallTrack", img)
 
         #frame = VisionProcessing(frame)
