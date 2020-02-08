@@ -7,6 +7,7 @@ import sys
 import picamera
 from imutils.video import VideoStream
 import time
+import math
 
 from ballPipeline import BallPipeline
 from ballClass import BallClass
