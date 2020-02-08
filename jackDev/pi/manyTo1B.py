@@ -45,7 +45,7 @@ class ManyTo1B:
                     maybe = self.candidateBalls[i]
             self.theOneTrueBall = maybe
 
-    def calcDistance(self, radius)
+    def calcDistance(self, radius):
         f_x = 2.7192940207391980
         F_x = f_x(2*radius/.14)
         return F_x
