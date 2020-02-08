@@ -73,7 +73,7 @@ cv.imshow("Blank", imgCentering)
 
 
 
-Below was v1, currently v1.1
+Below was v1, currently v1.2
 '''
 
 class CHclass:
@@ -103,11 +103,14 @@ class CHclass:
         self.gradThick = 2
         self.gradCol = [255, 260, 15]
         # bar (thickness only)
-        self.barThick = 4
+        self.barThick = 3
 
         # LEAVE these alone, they just manipulate the adjustable ones
         self.img = img
-        self.scale = scale
+        # the scale set by the user and the resolution of the image determine the overall scale of the crosshair
+        # The 600 seems to be the optimal default resolution scale number, but it can be refined later if needed
+        # That 600 is not a variable because having two scale variables seems unnecessary
+        self.scale = scale * (len(self.img) / 600)
         self.width = len(self.img[0])
         self.height = len(self.img)
         self.center = [int(self.width / 2), int(self.height / 2)]
@@ -165,11 +168,12 @@ class CHclass:
 
 
     # draws two thick bars on the horizontal crosshair, beginning at the ending y-value of the biggest graduation and going out to end of self.coverage
+    # the bars are actually rectangles because opencv rounds out lines, which made the thick bars look too far inside when drawn as lines
     def drawBars(self):
-        self.after = cv.line(self.after, ((self.center[0] - self.coverageX), self.center[1]), ((self.center[0] - self.gradLen), self.center[1]),
-            (self.gradCol[0], self.gradCol[1], self.gradCol[2]), self.barThick)
-        self.after = cv.line(self.after, ((self.center[0] + self.coverageX), self.center[1]), ((self.center[0] + self.gradLen), self.center[1]),
-            (self.gradCol[0], self.gradCol[1], self.gradCol[2]), self.barThick)
+        self.after = cv.rectangle(self.after, ((self.center[0] - self.coverageX), (self.center[1] - self.barThick)), ((self.center[0] - self.gradLen),
+           (self.center[1] + self.barThick)), (self.gradCol[0], self.gradCol[1], self.gradCol[2]), -1)
+        self.after = cv.rectangle(self.after, ((self.center[0] + self.coverageX), (self.center[1] - self.barThick)), ((self.center[0] + self.gradLen),
+           (self.center[1] + self.barThick)), (self.gradCol[0], self.gradCol[1], self.gradCol[2]), -1)
         return self.after
 
 
@@ -203,23 +207,19 @@ def main(argv=None):
 
           #img = np.zeros((600, 600, 3), np.uint8)
           img = frame.copy()
-          # sets the scale based on resolution (outside a class for now, also note that scale currently doesn't affect thickness)
-          if len(img) == 240:
-            scale = .4
-          elif len(img) == 480:
-            scale = .8
-          elif len(img) == 720:
-            scale = 1.2
-          elif len(img) == 1080:
-            scale = 1.8
-          else:
-            scale = 2
 
-          CHover = CHclass(img, scale)
-          imgCross = CHover.drawCross()
-          imgGrads = CHover.drawGrads()
-          imgBars = CHover.drawBars()
-          cv.imshow("Crosshair (v1.1)", imgBars)
+          toggle = True
+        
+          if toggle:
+            scale = 1
+            CHover = CHclass(img, scale)
+            imgCross = CHover.drawCross()
+            imgGrads = CHover.drawGrads()
+            imgBars = CHover.drawBars()
+            cv.imshow("Crosshair (v1.2)", imgBars)
+          else:
+            cv.imshow("Crosshair (v1.2)", img)
+
 
           #frame = VisionProcessing(frame)
 #          cv.imshow("VP", frame)
