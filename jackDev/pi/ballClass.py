@@ -28,8 +28,3 @@ class BallClass:
         if self.radius > 20:
             self.amIBigEnough = True
             return True
-        
-    def calcDistance(self, radius):
-        diameter = 2 * radius
-        dist = math.sqrt(2 * (diameter * diameter))
-        return dist

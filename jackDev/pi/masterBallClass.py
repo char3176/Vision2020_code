@@ -55,7 +55,7 @@ def main(argv=None):
         if len(mb.candidateBalls) > 0:
             cv2.circle(img, mb.theOneTrueBall.centroid, int (mb.theOneTrueBall.radius), (0, 0, 255), 4)
             cv2.circle(img, mb.theOneTrueBall.centroid, 4, (0, 0, 255), -1)
-        print(calcDistance(mb.theOneTrueBall.radius))
+        print(mb.calcDistance(mb.theOneTrueBall.radius))
         cv2.imshow("BallTrack", img)
 
         #frame = VisionProcessing(frame)
