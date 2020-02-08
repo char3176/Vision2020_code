@@ -142,18 +142,46 @@ class G2Class:
             self.isAG2 = False
 
 
-    def calcDistance(self,point1, point2):
+    def distanceFormula(self, point1, point2):
         xDiff = point1[0] - point2[0]
         yDiff = point1[1] - point2[1]
         dist = math.sqrt((xDiff * xDiff) + (yDiff * yDiff))
         return dist
 
+    def midpointFormula(self, point1, point2):
+        xAvg = (point1[0] + point2[0]) / 2
+        yAvg = (point1[1] + point2[1]) / 2
+        midpoint = [xAvg, yAvg]
+        return midpoint
+
     def calcRange(self):
-        upperPixelWidth = self.calcDistance(self.avgPts[0], self.avgPts[1])   
-        lowerPixelWidth = self.calcDistance(self.avgPts[2], self.avgPts[3])        
+        upperPixelWidth = self.distanceFormula(self.avgPts[0], self.avgPts[1])   
+        lowerPixelWidth = self.distanceFormula(self.avgPts[2], self.avgPts[3])        
         R1 = self.CP_LOCAL_FOCALLENGTHX * (self.FE_LOCAL_RWG2UPPERWIDTH/upperPixelWidth)
         R2 = self.CP_LOCAL_FOCALLENGTHX * (self.FE_LOCAL_RWG2LOWERWIDTH/lowerPixelWidth)
         return R1, R2
+
+    def calcAngle(self):
+        upperMidpoint = self.midpointFormula(self.avgPts[0], self.avgPts[1])
+        pixelOffset = -1 * (upperMidpoint[0] - (self.originalFrame.shape[1] / 2))
+        angle = math.degrees(math.atan(pixelOffset/self.CP_LOCAL_FOCALLENGTHX))
+        print("angle ", angle)
+        return angle
+        #THE PAINFUL WAY
+        #goalCenter = self.midpointFormula(self.avgPts[0], self.avgPts[1])
+        #pixelOffset = -1 * (goalCenter[0] - (self.originalFrame.shape[1] / 2))
+        ##Converts pixelOffset to meters based on length of offset and pixel length of the known G2
+        #G2UpperPixelWidth = self.distanceFormula(self.avgPts[0], self.avgPts[1])
+        #meterOffset = pixelOffset * (self.FE_LOCAL_RWG2UPPERWIDTH / G2UpperPixelWidth)
+        #g2Range, R2 = self.calcRange()
+        #print()
+        #print("(x) meterOffset: ", meterOffset)
+        #print("(y) g2Range: ", g2Range)
+        #angle = math.degrees(math.atan(meterOffset / g2Range))
+        #print("atan angle: ", math.degrees(math.atan(meterOffset / g2Range)))
+        #print("tan angle: ", math.degrees(math.tan(meterOffset / g2Range)))
+        #return angle
+
 
     def amIG2(self):
         #Run tests if the quadrant test passed
@@ -162,7 +190,7 @@ class G2Class:
             #FIND THE FIRST TWO ANGLES
             #Find longest side using the di
             if len(self.avgPts) == 4:
-              LTtoRTImgDist = self.calcDistance(self.avgPts[1], self.avgPts[3])
+              LTtoRTImgDist = self.distanceFormula(self.avgPts[1], self.avgPts[3])
               #Find shortest side using the distance formula
               xDiff = self.avgPts[2][0] - self.avgPts[3][0]
               yDiff = self.avgPts[2][1] - self.avgPts[3][1]
@@ -190,9 +218,9 @@ class G2Class:
                 xInt = (int)((yIntEq2 - yIntEq1) / (slopeEq1 - slopeEq2))
                 yInt = (int)(slopeEq1 * xInt) + yIntEq1
                 #Find the three side lengths
-                Q2toQ3 = self.calcDistance(self.avgPts[1], self.avgPts[2])
-                Q3toQ4 = self.calcDistance(self.avgPts[2], self.avgPts[3])
-                sharedSide = self.calcDistance(self.avgPts[2], [xInt, yInt])
+                Q2toQ3 = self.distanceFormula(self.avgPts[1], self.avgPts[2])
+                Q3toQ4 = self.distanceFormula(self.avgPts[2], self.avgPts[3])
+                sharedSide = self.distanceFormula(self.avgPts[2], [xInt, yInt])
                 #Use trig to calculate angles
                 ang1 = 90 - math.degrees(math.sin(sharedSide / Q2toQ3))
                 ang2 = 90 - math.degrees(math.sin(sharedSide / Q3toQ4))
@@ -213,9 +241,9 @@ class G2Class:
                 xInt = (int)((yIntEq2 - yIntEq1) / (slopeEq1 - slopeEq2))
                 yInt = (int)(slopeEq1 * xInt) + yIntEq1
                 #Find the three side lengths
-                Q3toQ4 = self.calcDistance(self.avgPts[2], self.avgPts[3])
-                Q4toQ1 = self.calcDistance(self.avgPts[3], self.avgPts[0])
-                sharedSide = self.calcDistance(self.avgPts[3], [xInt, yInt])
+                Q3toQ4 = self.distanceFormula(self.avgPts[2], self.avgPts[3])
+                Q4toQ1 = self.distanceFormula(self.avgPts[3], self.avgPts[0])
+                sharedSide = self.distanceFormula(self.avgPts[3], [xInt, yInt])
                 #Use trig to calculate angles
                 ang3 = 90 - math.degrees(math.sin(sharedSide / Q3toQ4))
                 ang4 = 90 - math.degrees(math.sin(sharedSide / Q4toQ1))
@@ -229,7 +257,7 @@ class G2Class:
         width = frame.shape[1]
         height = frame.shape[0]
         centerOfFrame = [int(width/2),int(height/2)]
-        distance = self.calcDistance(self.centroid, centerOfFrame)
+        distance = self.distanceFormula(self.centroid, centerOfFrame)
         #print("width = ", width, "height = ", height)
         #print("Distance to ROF: ", distance, "ROF Threshold: ", (ringOfFireRadiusScale * (0.5 * height)))
         if distance < (ringOfFireRadiusScale * (0.5 * height)):
@@ -276,7 +304,7 @@ class G2Class:
         cv2.circle(self.newframe, (int(100), int(100)), int(30), (0,255,0), 2)
 
     def doEverything(self):
-        print()
+        #print()
         #print("COUNTOUR ", self.G2ID, "BEGINS!!")
         #cv2.drawContours(self.newframe, self.cnt, -1, (0,255,0), 3)
         #cv2.drawContours(self.newframe, [self.cnt], -1, (0,0,255), 3)
@@ -287,12 +315,14 @@ class G2Class:
         self.calcIfInRingOfFire(self.originalFrame, 0.25)
         #if self.isAG2:
         #  frame = self.drawFittingOnFrame(frame)
-        print("Is a G2: ", self.isAG2)
+        #print("Is a G2: ", self.isAG2)
         #print("IsInROF: ", self.isInRingOfFire)
         #print("Total points: ", len(self.approxPts))
         if self.isAG2:
             R1, R2 = self.calcRange()
-            print("R1: ", R1, "meters   ", R1 * 1/0.0254, "inches", (R2 * 1/0.0254)/12, "feet")
-            print("R2: ", R2, "meters   ", R2 * 1/0.0254, "inches", (R2 * 1/0.0254)/12, "feet")
+            #print("R1: ", R1, "meters   ", (int)(R1 * 1/0.0254), "inches", (R2 * 1/0.0254)/12, "feet")
+            #print("R2: ", R2, "meters   ", (int)(R2 * 1/0.0254), "inches", (R2 * 1/0.0254)/12, "feet")
+            angle = self.calcAngle()
+            #print("angle: ", angle)
         #print("END OF CONTOUR ", self.G2ID, "!!")
 
