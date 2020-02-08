@@ -25,6 +25,11 @@ class BallClass:
         self.centroid = (int(M["m10"]/M["m00"]), int(M["m01"]/M["m00"]))
 
     def checkIfBigEnough(self):
-        if self.radius > 5:
+        if self.radius > 20:
             self.amIBigEnough = True
             return True
+        
+    def calcDistance(self, radius):
+        diameter = 2 * radius
+        dist = math.sqrt(2 * (diameter * diameter))
+        return dist
