@@ -6,22 +6,22 @@ from ballClass import BallClass
 class ManyTo1B:
     
     def __init__(self, cnts):
-        print ("start of class")
+        #print ("start of class")
         self.candidateBalls = []
         self.theOneTrueBall = None
-        print (cnts)
+        #print (cnts)
         self.process(cnts)
         
 
     def process(self, cnts):
-        print ("process function begins")
+        #print ("process function begins")
         self.loopOverCntsAndCreateBallObjects(cnts)
         self.thereCanBeOnlyOne()
         
         
     
     def loopOverCntsAndCreateBallObjects(self, cnts):
-        print ("loop and create begins")
+        #print ("loop and create begins")
         for i in range(0, len(cnts)):
             tempBall = BallClass(cnts[i])
             #print (tempBall)
@@ -33,9 +33,9 @@ class ManyTo1B:
                 
         
     def thereCanBeOnlyOne(self):
-        print ("there can be only one begins")
+        #print ("there can be only one begins")
         if len(self.candidateBalls) == 0:
-            print("no balls")
+            #print("no balls")
         else:
             maybe = self.candidateBalls[0]
             numCandidateBalls = len(self.candidateBalls)
