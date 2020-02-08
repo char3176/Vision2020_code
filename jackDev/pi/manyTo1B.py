@@ -47,7 +47,7 @@ class ManyTo1B:
 
     def calcDistance(self, radius):
         f_x = 2.7192940207391980
-        F_x = f_x(2*radius/.14)
+        F_x = f_x*(2*radius/.14)
         return F_x
         
     def coord(self):
