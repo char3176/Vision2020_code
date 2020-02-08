@@ -73,12 +73,12 @@ cv.imshow("Blank", imgCentering)
 
 
 
-Below was v1, currently v1.2
+Below was v1, currently v1.3
 '''
 
 class CHclass:
 
-    def __init__(self, img, scale):
+    def __init__(self, img, scale, inROF):
         # ADJUST these variables for different results
         # self.coverageX is how far the crosshair extends from center horizontally, self.coverageY is vertically
         self.coverageX = 100
@@ -95,14 +95,17 @@ class CHclass:
         self.CrCol = [255, 40, 0]
         # circle
         self.cirThick = 2
-        self.cirCol = [0, 0, 255]
+        self.cirColOut = [0, 0, 255]
+        self.cirColIn = [215, 70, 255]
         # graduations
         self.gradLen = 15
         # how much bigger each graduation is than the last
         self.gradInc = 10
         self.gradThick = 2
-        self.gradCol = [255, 260, 15]
-        # bar (thickness only)
+        self.gradCol = [255, 255, 15]
+        # bar
+        self.barColIn = [215, 70, 255]
+        self.barColOut = [255, 255, 15]
         self.barThick = 3
 
         # LEAVE these alone, they just manipulate the adjustable ones
@@ -128,6 +131,13 @@ class CHclass:
             # do not also multiply deviation by self.scale because self.scope has already done that and takes care of the difference
             deviation = int(deviation * self.scope)
             self.gradDiff += [deviation]
+        self.inROF = inROF
+        if self.inROF:
+            self.cirCol = self.cirColIn
+            self.barCol = self.barColIn
+        else:
+            self.cirCol = self.cirColOut
+            self.barCol = self.barColOut
 
 
     # draws the crosshair and circle on the image
@@ -153,7 +163,7 @@ class CHclass:
         for diff in self.gradDiff:
             self.after = cv.line(self.after, ((self.center[0] - self.gradLen), (self.center[1] + diff)), ((self.center[0] + self.gradLen),
                 (self.center[1] + diff)), (self.gradCol[0], self.gradCol[1], self.gradCol[2]), self.gradThick)
-            # each += makes the next graduation out a little bigger (by the value of self.gradInc
+            # each += makes the next graduation out a little bigger (by the value of self.gradInc)
             self.gradLen += self.gradInc
         # resets self.gradLen to its original before doing the ones above the circle
         self.gradLen = self.gradLenO
@@ -171,9 +181,9 @@ class CHclass:
     # the bars are actually rectangles because opencv rounds out lines, which made the thick bars look too far inside when drawn as lines
     def drawBars(self):
         self.after = cv.rectangle(self.after, ((self.center[0] - self.coverageX), (self.center[1] - self.barThick)), ((self.center[0] - self.gradLen),
-           (self.center[1] + self.barThick)), (self.gradCol[0], self.gradCol[1], self.gradCol[2]), -1)
+           (self.center[1] + self.barThick)), (self.barCol[0], self.barCol[1], self.barCol[2]), -1)
         self.after = cv.rectangle(self.after, ((self.center[0] + self.coverageX), (self.center[1] - self.barThick)), ((self.center[0] + self.gradLen),
-           (self.center[1] + self.barThick)), (self.gradCol[0], self.gradCol[1], self.gradCol[2]), -1)
+           (self.center[1] + self.barThick)), (self.barCol[0], self.barCol[1], self.barCol[2]), -1)
         return self.after
 
 
@@ -193,6 +203,7 @@ def main(argv=None):
   vs.camera.brightness = 30
   vs.camera.contrast = 100
   vs.camera.saturation = 100
+  
 
   #DA MASTA LOOP
   while True:
@@ -208,17 +219,23 @@ def main(argv=None):
           #img = np.zeros((600, 600, 3), np.uint8)
           img = frame.copy()
 
+          # variables to be passed in
+          # toggle turns the crosshair on or off
           toggle = True
-        
+          # inROF will be passed from Jake's G2class to see if the goal is in the center of the image and therefore it's safe to shoot
+          # it it's safe to shoot, the colors of the circle and bars on the chrosshair will change
+          inROF = True
+          # scale scales the whole crosshair (value <1 makes it smaller, value >1 makes it bigger)
+          scale = 1
+
           if toggle:
-            scale = 1
-            CHover = CHclass(img, scale)
+            CHover = CHclass(img, scale, inROF)
             imgCross = CHover.drawCross()
             imgGrads = CHover.drawGrads()
             imgBars = CHover.drawBars()
-            cv.imshow("Crosshair (v1.2)", imgBars)
+            cv.imshow("Crosshair (v1.3)", imgBars)
           else:
-            cv.imshow("Crosshair (v1.2)", img)
+            cv.imshow("Crosshair (v1.3)", img)
 
 
           #frame = VisionProcessing(frame)
