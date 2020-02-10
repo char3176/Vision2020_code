@@ -34,16 +34,16 @@ class tictoctac:
     self.tac = self.toc - self.tic
     self.tac_ms = self.tac * 1000
 
-  def setTac(self, x):
+  def setRawTac(self, x):
     self.tac = x
 
-  def getTac(self):
+  def getRawTac(self):
     return self.tac
 
   def setTac_ms(self, x):
     self.tac_ms = x
 
-  def getTac_ms(self, x):
+  def getTac(self):
     return self.tac_ms
 
   def printTac(self):
