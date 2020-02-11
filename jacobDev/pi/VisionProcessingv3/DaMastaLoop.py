@@ -11,7 +11,7 @@ import sys
 import picamera
 from imutils.video import VideoStream
 import time
-
+import logging
 
 #from ballClass.py - moved to general
 #from ballPipeline.py - moved to general
@@ -19,6 +19,12 @@ import time
 #from masterBallClass.py - 4 specific classes
 #from newBallPipeline.py - moved to general
 #from Crosshair.py - moved to general
+
+logging.basicConfig(
+    filename="vision.log",
+    level=logging.DEBUG,
+    format="%(asctime)s:%(levelname)s:%(messages)s"
+    )
 
 def loadCameraConfig():
 
