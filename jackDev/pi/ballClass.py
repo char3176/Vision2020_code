@@ -12,7 +12,7 @@ class BallClass:
         self.rwRange = 0
         self.amIBigEnough = False
         self.process(cnt)
-        self.cnt = cnt
+        #self.cnt = cnt
 
     def process(self, cnt):
         self.getCentroid(cnt)
