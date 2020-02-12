@@ -1,0 +1,7 @@
+horizontal_angle = atan( (xCoord_of_center_pixel_of_target - xCoord_of_center_pixel_image) / focal_x )
+    techically it's the abs(diff between "xCoord_of_center_pixel_of_target" and "xCoord_of_center_pixel_of_image/frame")
+
+vertical_angle = atan( (yCoord_of_center_pixel_of_target - center_pixel_yCoord) / focal_y )
+
+
+
