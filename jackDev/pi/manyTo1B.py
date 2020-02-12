@@ -46,12 +46,12 @@ class ManyTo1B:
             self.theOneTrueBall = maybe
 
     def calcDistance(self, radius):
-        f_x = 800 #1246.02212 picam v2 #208.15839843 for picam v1
+        f_x = 825 #1246.02212 picam v2 #208.15839843 for picam v1
         F_x = f_x*(.14/(2*radius))
         return F_x
     
     def calcAngle(self, cX, size):
-        f_x = 800
+        f_x = 825
         pixelOffset = cX - (size / 2)
         angle = math.degrees(math.atan(pixelOffset/f_x))
         return angle
