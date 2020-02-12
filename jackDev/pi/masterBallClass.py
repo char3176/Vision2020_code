@@ -56,6 +56,7 @@ def main(argv=None):
         if len(mb.candidateBalls) > 0:
             cv2.circle(img, mb.theOneTrueBall.centroid, int (mb.theOneTrueBall.radius), (0, 0, 255), 4)
             cv2.circle(img, mb.theOneTrueBall.centroid, 4, (0, 0, 255), -1)
+            cv2.drawContours(frame, cnts, 0, (0, 255, 0), 3)
             print(mb.calcDistance(mb.theOneTrueBall.radius))
             print(mb.calcAngle(mb.theOneTrueBall.cX, img.shape[1]))
         cv2.imshow("BallTrack", img)
