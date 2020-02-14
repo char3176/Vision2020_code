@@ -8,6 +8,8 @@ import picamera
 from imutils.video import VideoStream
 import time
 import math
+import logging
+from networktables import NetworkTables
 
 from ballPipeline import BallPipeline
 from ballClass import BallClass
@@ -22,6 +24,10 @@ def main(argv=None):
     ap.add_argument("-p", "--picamera", type=int, default=1, help="whether or not the Raspi camera should be used")
     #ap.add_argument("-p", "--picamera", type=int, default=1, help="whether or not the Raspi camera should be used")
     args = vars(ap.parse_args())
+
+    #---------------
+    #  INIT  ...move to proper fxn later
+    #----------------
 #    vs = VideoStream(usePiCamera=args["picamera"] > 0, resolution=(320, 240),framerate=60).start()
 #    vs = VideoStream(usePiCamera=args["picamera"] > 0, resolution=(640, 480),framerate=60).start()
     vs = VideoStream(usePiCamera=args["picamera"] > 0, resolution=(640, 480),framerate=90).start()
@@ -35,7 +41,16 @@ def main(argv=None):
     vs.camera.contrast = 0
     vs.camera.saturation = 0
 
-    #DA MASTA LOOP
+    logging.basicConfig(level=logging.DEBUG)
+    NetworkTables.initialize(server='10.31.76.2')
+    fuTable = NetworkTables.getTable('fuVision')
+    #target_data = ntproperty('/fuVision/target_data', 6 * [0.0,], doc='Array of double/floats with target info: timestamp isFound, mode, distance, yaw')
+
+
+    #-------------------
+    #  PERIODIC
+    #--------------------
+
     while True:
         #Grab the frame
         frame = vs.read()
@@ -61,12 +76,16 @@ def main(argv=None):
             print(mb.calcAngle(mb.theOneTrueBall.cX, img.shape[1]))
         cv2.imshow("BallTrack", img)
 
+        # NEED TO SET target_data before putting into networkTables fuTable
+        fuTable.putNumberArray("target_data", target_data)
+
         #frame = VisionProcessing(frame)
         #cv.imshow("VP", frame)
         key = cv2.waitKey(1) & 0xFF
 
         if key == ord("q"):
             break
+
 
     cv2.destroyAllWindows()
     vs.stop()
