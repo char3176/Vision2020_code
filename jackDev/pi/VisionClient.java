@@ -28,16 +28,16 @@ public class VisionClient {
         /* Init Stuff */
         /* ---------- */
         NetworkTableInstance instance = NetworkTableInstance.getDefault();
-        NetworkTable fuTable = instance.getTable("fuVision");
+        NetworkTable ballTable = instance.getTable("ballVision");
 
         /* -------------- */
         /* Periodic Stuff */
         /* -------------- */
-        double[] fuTargetData = fuTable.getEntry("target_data").getDoubleArray(defaultValue);
+        double[] ballTargetData = ballTable.getEntry("target_data").getDoubleArray(defaultValue);
         /*--------------------------------------------------------------
          * This note explains received "target_data" format.
          * DETAIL:
-         *      NetworkTablesEntry "fuVision/target_data" is an
+         *      NetworkTablesEntry "ballVision/target_data" is an
          * ARRAY that holds the data needed to autonomously "chase
          * the ball."
          *      We tx/rx as an array to insure the time-relevant data
@@ -56,15 +56,15 @@ public class VisionClient {
         /*--------------------------------------------------------------*/
 
         public boolean isBallTargetAvail() {
-            return fuTargetData[2];
+            return ballTargetData[2];
         }
 
         public double getBallDistance() {
-            return fuTargetData[4];
+            return ballTargetData[4];
         }
 
         public double getBallAngle() {
-            return fuTargetData[5];
+            return ballTargetData[5];
         }
         
 
