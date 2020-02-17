@@ -14,7 +14,8 @@
 
   # Vision master-loop
     - implement video stream server
-      - ballPi feed should able to toggle between pi-cam and usb-fisheye
+      - ballPi feed should able to toggle between 
+        pi-cam and usb-fisheye
         at driveStation
           usbcam -> vs = VideoStream(src=0).start()
       - g2Pi feed should be able to toggle reticle on and off
@@ -28,13 +29,15 @@
     - add heartbeat to visionServer and visionClient.java
     - add proper logging statements through-out
     - add "snap pic" functionality:  driverStation clicks button and Pi
-      takes/saves quick series of snapshots (say, 9 pics evenly spread out
-      over 300 ms - essentially 1 pic per each 20-40ms loop of robotInit? Or
-      maybe longer - 50 pics over 1000 ms, 1 each per 20-40ms loop?
-      These "1 per 20-40ms loop" are useful for debugging, but won't be
-      very good for PR, so maybe have another "snap pic" version/option
-      that grabs 1 pic every 100ms over 5 sec for a total of 50 pics?)
-    - Or hell, worst case, have a "save all frames" fxn that saves every
+      takes/saves quick series of snapshots (say, 9 pics evenly 
+      spread out over 300 ms - essentially 1 pic per each 20-40ms
+      loop of robotInit? Or maybe longer - 50 pics over 1000 ms, 
+      1 each per 20-40ms loop?  These "1 per 20-40ms loop" are useful 
+      for debugging, but won't be very good for PR, so maybe have 
+      another "snap pic" version/option that grabs 1 pic every 100ms 
+      over 5 sec for a total of 50 pics?)
+    - Or hell, worst case, have a "save all frames" fxn that 
+      saves every
       frame while SaveAllFrames = True.
     - add "rec vid" functionality:  driverStation clicks button and Pi
       takes short video (say, 10 sec?) and stores on disk
@@ -51,11 +54,12 @@
       - snap pics
       - saveAllFrames
       - toggle vid feed on/off
-      - "stop image processing" signal that stops costly vision processing part
-        of visionServer loop? (Also have "start image processing" to
-        restart it?  Image processing should be on by default at
-        boot/startup.)
-      - "shutdown now" signal for Rpi turning off rpi from driveStation
+      - "stop image processing" signal that stops costly 
+        vision processing part of visionServer loop? (Also have 
+        "start image processing" to restart it?  Image processing 
+        should be on by default at boot/startup.)
+      - "shutdown now" signal for Rpi turning off rpi from 
+        driveStation
     - add these to ballTable
       - toggle vid feed source (for ball vs fisheye feeds on ballPi)
       - target_data array/packet for ballToChase
@@ -77,7 +81,8 @@
     - try supervise.ly
       - get dataset
       - label dataset
-        - These as the classes? : fullBall, ballAggregate, occludedBall, noBall
+        - These as the classes? : fullBall, ballAggregate, 
+          occludedBall, noBall
       - inquire of Nathan about AWS credits
 
   # sw_arch
@@ -89,15 +94,17 @@
     - divide goal-side of field into sectors/quads
     - create traj's in pathweaver from each sector to "launch area"
       sectors
-    - figure out how to deal with determining initial orientation.  Spin
-      in place until camera acquisition of G2 and LB, then triangulate
-      my sector using distance-to-G2, distance-to-LB, angle-to-G2, and
-      angle-to-LB. Then engage a pathfinder traj to a "launch area" sector.
+    - figure out how to deal with determining initial orientation.  
+      Maybe spin in place until camera acquisition of G2 and LB, then 
+      triangulate my sector using distance-to-G2, distance-to-LB, 
+      angle-to-G2, and angle-to-LB. Then engage a pathfinder traj 
+      to a "launch area" sector.
 
   # ifTurrent
     - determine if ever need to know/track relative rotation of turret
       to chassis.
-        - YES: if engaging automated drive/traj based on data/pic from turret cam.
+        - YES: if engaging automated drive/traj based on 
+          data/pic from turret cam.
 
 
    
