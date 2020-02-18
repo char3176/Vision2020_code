@@ -68,7 +68,7 @@ def daMastaLoop():
         #---------------------#
         #STEP 1: GET TABLE DATA
         #---------------------#
-        #netTable = 
+        #netTable =
 
         #-----------------------------------#
         #STEP 2: MAKE DECISIONS BASED ON DATA
@@ -88,7 +88,7 @@ def daMastaLoop():
             isLightOn = not isLightOn
         elif key == ord("k"): #Kill
             break
-    
+
         if isLightOn:
             GPIO.output(GPIO_PIN, GPIO.HIGH)
         else:
@@ -99,7 +99,7 @@ def daMastaLoop():
         #------------------------#
         ntinst.flush()
 
-    GPIO.output(GPIO_PIN, GPIO.LOW)  
+    GPIO.output(GPIO_PIN, GPIO.LOW)
 
 daMastaLoop()
 cv2.destroyAllWindows()

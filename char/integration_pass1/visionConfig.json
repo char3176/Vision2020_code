@@ -1,0 +1,205 @@
+{
+  "teamID": 3176,
+  "ntmode": "client",
+  "ntid": "g2VisionProc",
+  "cameraConfigs": [
+      {
+          "cameraID": "g2",
+          "cameraMakeModel": "RasPi piCam v2",
+          "isCSI": "True",
+          "isUSB": "False",
+          "ispicamera": "True",
+          "resolutionOptions": [
+              {
+                  "width": 320,
+                  "height": 240,
+                  "fps": 60
+              },
+              {
+                  "width": 640,
+                  "height": 480,
+                  "fps": 60
+              },
+              {
+                  "width": 640,
+                  "height": 480,
+                  "fps": 90
+              },
+              {
+                  "width": 1280,
+                  "height": 720,
+                  "fps": 60
+              },
+              {
+                  "width": 1640,
+                  "height": 922,
+                  "fps": 40
+              },
+              {
+                  "width": 1920,
+                  "height": 1080,
+                  "fps": 30
+              },
+              {
+                  "width": 1640,
+                  "height": 1232,
+                  "fps": 40
+              },
+              {
+                  "width": 3280,
+                  "height": 2464,
+                  "fps": 15
+              }
+          ],
+          "brightness": 30,
+          "contrast": 100,
+          "saturation": 100,
+          "sharpness": 50,
+          "hm_raw_brightness": 30,
+          "hm_raw_contrast": 10,
+          "hm_raw_saturation": 200,
+          "hm_raw_sharpness": 25,
+          "hm_backlight_compensation":0,
+          "hm_exposure_auto": 1,
+          "hm_raw_exposure_absolute": 5,
+          "hm_exposure_absolute": 1,
+          "hm_pan_absolute": 0,
+          "hm_tilt_absolute": 0,
+          "hm_zoom_absolute": 0
+      },
+      {
+          "cameraID": "ball",
+          "cameraMakeModel": "RasPi piCam v2",
+          "isCSI": "True",
+          "isUSB": "False",
+          "ispicamera": "True",
+          "resolutionOptions": [
+              {
+                  "width": 320,
+                  "height": 240,
+                  "fps": 60
+              },
+              {
+                  "width": 640,
+                  "height": 480,
+                  "fps": 60
+              },
+              {
+                  "width": 640,
+                  "height": 480,
+                  "fps": 90
+              },
+              {
+                  "width": 1280,
+                  "height": 720,
+                  "fps": 60
+              },
+              {
+                  "width": 1640,
+                  "height": 922,
+                  "fps": 40
+              },
+              {
+                  "width": 1920,
+                  "height": 1080,
+                  "fps": 30
+              },
+              {
+                  "width": 1640,
+                  "height": 1232,
+                  "fps": 40
+              },
+              {
+                  "width": 3280,
+                  "height": 2464,
+                  "fps": 15
+              }
+          ],
+          "brightness": 50,
+          "contrast": 0,
+          "saturation": 0,
+          "sharpness": 50,
+          "hm_raw_brightness": 30,
+          "hm_raw_contrast": 10,
+          "hm_raw_saturation": 200,
+          "hm_raw_sharpness": 25,
+          "hm_backlight_compensation":0,
+          "hm_exposure_auto": 1,
+          "hm_raw_exposure_absolute": 5,
+          "hm_exposure_absolute": 1,
+          "hm_pan_absolute": 0,
+          "hm_tilt_absolute": 0,
+          "hm_zoom_absolute": 0
+      },
+      {
+          "cameraID": "conveyorOverwatch",
+          "cameraMakeModel": "ELP-USBFHD01M-L180",
+          "isCSI": "True",
+          "isUSB": "False",
+          "ispicamera": "True",
+          "resolutionOptions": [
+              {
+                  "width": 320,
+                  "height": 240,
+                  "fps": 30
+              },
+              {
+                  "width": 352,
+                  "height": 288,
+                  "fps": 30
+              },
+              {
+                  "width": 640,
+                  "height": 480,
+                  "fps": 30
+              },
+              {
+                  "width": 800,
+                  "height": 600,
+                  "fps": 30
+              },
+              {
+                  "width": 1024,
+                  "height": 768,
+                  "fps": 60
+              },
+              {
+                  "width": 1280,
+                  "height": 720,
+                  "fps": 30
+              },
+              {
+                  "width": 1280,
+                  "height": 1024,
+                  "fps": 30
+              },
+              {
+                  "width": 1920,
+                  "height": 1080,
+                  "fps": 30
+              }
+          ],
+          "brightness": 50,
+          "contrast": 0,
+          "saturation": 0,
+          "sharpness": 50,
+          "hm_raw_brightness": 30,
+          "hm_raw_contrast": 10,
+          "hm_raw_saturation": 200,
+          "hm_raw_sharpness": 25,
+          "hm_backlight_compensation":0,
+          "hm_exposure_auto": 1,
+          "hm_raw_exposure_absolute": 5,
+          "hm_exposure_absolute": 1,
+          "hm_pan_absolute": 0,
+          "hm_tilt_absolute": 0,
+          "hm_zoom_absolute": 0
+      }
+  ]
+}
+
+          
+
+
+
+

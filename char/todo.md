@@ -28,8 +28,8 @@
             ballPi's two feeds?
     - add heartbeat to visionServer and visionClient.java
     - add proper logging statements through-out
-    - add "snap pic" functionality:  driverStation clicks button and Pi
-      takes/saves quick series of snapshots (say, 9 pics evenly 
+    - add "snap pic" functionality:  driverStation clicks button and 
+      Pi takes/saves quick series of snapshots (say, 9 pics evenly 
       spread out over 300 ms - essentially 1 pic per each 20-40ms
       loop of robotInit? Or maybe longer - 50 pics over 1000 ms, 
       1 each per 20-40ms loop?  These "1 per 20-40ms loop" are useful 
