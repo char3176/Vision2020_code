@@ -61,6 +61,12 @@ def main(argv=None):
     angle = 1.2
 
     while True:
+        #update vars from networktables
+        toggle_ball_targeting = ballTable.getBoolean("toggle_ball_targeting")
+        provide_vid_to_DS = ballTable.getBoolean("provide_vid_to_DS")
+        switch_vid_src = ballTable.getNumber("switch_vid_src")  ##Don't like this approach
+
+
         #Grab the frame
         frame = vs.read()
         #frame = imutils.resize(frame, width=320)
