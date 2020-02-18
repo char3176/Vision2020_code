@@ -11,6 +11,7 @@ import math
 import logging
 from networktables import NetworkTables
 from networktables import NetworkTablesInstance
+from cscore import CameraServer, VideoSource
 
 from ballPipeline import BallPipeline
 from ballClass import BallClass
@@ -36,6 +37,7 @@ def main(argv=None):
 #    vs = VideoStream(usePiCamera=args["picamera"] > 0, resolution=(1920, 1080),framerate=30).start()
 #    vs = VideoStream(usePiCamera=args["picamera"] > 0, resolution=(1640, 1232),framerate=40).start()
 #    vs = VideoStream(usePiCamera=args["picamera"] > 0, resolution=(3280, 2464),framerate=15).start()
+#    usbcam = VideoStream(src=0).start()
     time.sleep(2.0)
     vs.camera.brightness = 50
     vs.camera.contrast = 0
@@ -58,7 +60,7 @@ def main(argv=None):
     isThereABall = 0.0
     mode = 0.0
     distance = 0
-    angle = 1.2
+    angle = 0.0
 
     while True:
         #update vars from networktables
