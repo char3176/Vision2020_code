@@ -30,7 +30,7 @@ from imutils.video import VideoStream
 #vs = VideoStream(usePiCamera=args["picamera"] > 0, resolution=(3280, 2464),framerate=15).start()
 #vs = VideoStream(usePiCamera=args["picamera"] > 0, resolution=(320, 240),framerate=60).start()
 #vs = VideoStream(usePiCamera=args["picamera"] > 0, resolution=(640, 480),framerate=60).start()
-vs = VideoStream(usePiCamera=True, resolution=(640, 480),framerate=90).start()
+#vs = VideoStream(usePiCamera=True, resolution=(640, 480),framerate=90).start()
 #vs = VideoStream(usePiCamera=args["picamera"] > 0, resolution=(1280, 720),framerate=60).start()
 #vs = VideoStream(usePiCamera=args["picamera"] > 0, resolution=(1640, 922),framerate=40).start()
 #vs = VideoStream(usePiCamera=args["picamera"] > 0, resolution=(1920, 1080),framerate=30).start()
@@ -44,9 +44,9 @@ time.sleep(2.0)
 
 def main():
     NetworkTables.initialize(server='10.12.34.2')
-    vs.camera.brightness = 50
-    vs.camera.contrast = 0
-    vs.camera.saturation = 0
+#    vs.camera.brightness = 50
+#    vs.camera.contrast = 0
+#    vs.camera.saturation = 0
 
     cs = CameraServer.getInstance()
     cs.enableLogging()
@@ -64,11 +64,10 @@ def main():
     outputStream = cs.putVideo("Name", 640, 480)
 
     # Allocating new images is very expensive, always try to preallocate
-    imgb = np.zeros(shape=(640, 480, 3), dtype=np.uint8)
     img = np.zeros(shape=(640, 480, 3), dtype=np.uint8)
 
     while True:
-        frame = vs.read()
+#        frame = vs.read()
         # Tell the CvSink to grab a frame from the camera and put it
         # in the source image.  If there is an error notify the output.
         time, img = cvSink.grabFrame(img)
