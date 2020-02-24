@@ -14,6 +14,7 @@ from networktables import NetworkTablesInstance
 
 
 def main(argv=None):
+    index = 0
     ap= argparse.ArgumentParser()
     #ap.add_argument("-v", "--video", help="path to the (optional) video file")
     ap.add_argument("-i", "--input", help="path to the input image file")
@@ -54,9 +55,10 @@ def main(argv=None):
         if key == ord("q"):
             break
         if key == ord("c"):
-            timestamp = float(time.time())
-            outputfilename = str("image_"+timestamp)
+            outputfilename = str("image_"+str(index)+".jpg")
             cv2.imwrite(outputfilename, frame)
+            print("Took pic:", outputfilename)
+            index = index + 1
 
     cv2.destroyAllWindows()
     vs.stop()
