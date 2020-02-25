@@ -6,17 +6,18 @@
 
 import cscore as cs
 
-if hasattr(cs, "UsbCamera"):
-    camera = cs.UsbCamera("usbcam", 0)
-    camera.setVideoMode(cs.VideoMode.PixelFormat.kMJPEG, 320, 240, 30)
-else:
+if True:
+#if hasattr(cs, "UsbCamera"):
+#    camera = cs.UsbCamera("usbcam", 0)
+#    camera.setVideoMode(cs.VideoMode.PixelFormat.kMJPEG, 320, 240, 30)
+#else:
     import cv2
     import threading
 
     camera = cs.CvSource("cvsource", cs.VideoMode.PixelFormat.kMJPEG, 320, 240, 30)
 
     # tell OpenCV to capture video for us
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(2)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
 
