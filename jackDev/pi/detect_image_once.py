@@ -117,7 +117,7 @@ def main():
     print('  id:    ', obj.id)
     print('  score: ', obj.score)
     print('  bbox:  ', obj.bbox)
-    print('  x_min: ', obj.bbox.BBox[0])
+    print('  x_min: ', obj.bbox.xmin)
 
   if args.output:
     image = image.convert('RGB')

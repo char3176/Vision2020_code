@@ -19,12 +19,28 @@ class TensorFlowPipeline:
     label = models/coco_labels.txt
 
     def process(self, source):
+      parser = argparse.ArgumentParser(
+      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+      parser.add_argument('-m', '--model', required=True,
+                      help='File path of .tflite file.')
+      parser.add_argument('-i', '--input', required=True,
+                      help='File path of image to process.')
+      parser.add_argument('-l', '--labels',
+                      help='File path of labels file.')
+      parser.add_argument('-t', '--threshold', type=float, default=0.4,
+                      help='Score threshold for detected objects.')
+      parser.add_argument('-o', '--output',
+                      help='File path for the result image with annotations')
+      parser.add_argument('-c', '--count', type=int, default=1,
+                      help='Number of times to run inference')
+      args = parser.parse_args()
+
+      labels = load_labels(args.labels) if args.labels else {}
       interpreter = make_interpreter(args.model)
       interpreter.allocate_tensors()
-
-      image = Image.open(args.input)
+      self.image = source
       scale = detect.set_input(interpreter, image.size,
-                               lambda size: image.resize(size, Image.ANTIALIAS))
+                                lambda size: image.resize(size, Image.ANTIALIAS))
 
       start = time.perf_counter()
       interpreter.invoke()
