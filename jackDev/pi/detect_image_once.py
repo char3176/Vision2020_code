@@ -105,6 +105,7 @@ def main():
     interpreter.invoke()
     inference_time = time.perf_counter() - start
     objs = detect.get_output(interpreter, args.threshold, scale)
+    print(objs)
     print('%.2f ms' % (inference_time * 1000))
 
   print('-------RESULTS--------')
