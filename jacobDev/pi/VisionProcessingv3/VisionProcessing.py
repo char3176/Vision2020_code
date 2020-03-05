@@ -1,6 +1,6 @@
 from imutils.video import VideoStream
 import time
-import cv2 as cv
+import cv2
 import picamera
 import imutils
 import argparse
@@ -8,7 +8,7 @@ import numpy as np
 from collections import deque
 
 
-from grip import GripPipeline
+from grip2 import GripPipeline
 from FilterG2s import FilterG2s
 from G2Class import G2Class
 
@@ -43,9 +43,9 @@ class FilterContours:
         for cnt in cnts:
             #I dont know what epsilon does but we need it to process points
             percentArcLength = 0.01
-            epsilon = percentArcLength * cv.arcLength(cnt, True)
+            epsilon = percentArcLength * cv2.arcLength(cnt, True)
             #Find the array of points or the contour
-            pts = cv.approxPolyDP(cnt, epsilon, True)
+            pts = cv2.approxPolyDP(cnt, epsilon, True)
             approxPts.append(pts)
 
         #print("approxPts")
@@ -68,39 +68,3 @@ def findG2InFrame(frame):
     g2 = sorter.findTheOneTrueG2()
     #print("getG2FromFrame g2 = ", g2)
     return g2
-
-
-
-ap = argparse.ArgumentParser()
-ap.add_argument("-p", "--picamera", type=int, default=1, help="whether or not the Raspi camera should be used")
-args = vars(ap.parse_args())
-vs = VideoStream(usePiCamera=args["picamera"] > 0, resolution=(320, 240),framerate=60).start()
-time.sleep(2.0)
-vs.camera.brightness = 30
-vs.camera.contrast = 100
-vs.camera.saturation = 100
-
-#DA MASTA LOOP
-while True:
-        #Grab the frame
-        frame = vs.read()
-        #frame = imutils.resize(frame, width=320)
-        #frame = imutils.rotate(frame, 90)
-
-        #with picamera.array.PiRGBArray(camera) as stream:
-            #camera.capture(stream, format="bgr")
-            #frame = stream.array
-
-        g2 = findG2InFrame(frame)
-        if g2 is not None:
-          frame = g2.drawFittingOnFrame(frame)
-
-        #frame = VisionProcessing(frame)
-        cv.imshow("VP", frame)
-        key = cv.waitKey(1) & 0xFF
-
-        if key == ord("q"):
-            break
-
-cv.destroyAllWindows()
-vs.stop()
